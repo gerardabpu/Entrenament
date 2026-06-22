@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pla 90 dies · Força + Cardio</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2ee;
+  --surface: #fff;
+  --surface2: #f0ede8;
+  --border: #ddd9d2;
+  --text: #1a1814;
+  --text2: #6b6660;
+  --text3: #9e9890;
+  --accent: #e85d26;
+  --done: #2d6a4f;
+  --done-bg: #d4eddf;
+  --today-border: #e85d26;
+  --gym-bg: #e8e6e0; --gym: #3a3530;
+  --trail-bg: #eaf4ef; --trail: #2d6a4f;
+  --bici-bg: #e4eef8; --bici: #1a4a7c;
+  --rest-bg: #f0ede8; --rest: #9e9890;
+  --radius: 10px; --radius-sm: 6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Fira Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+header{padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;}
+.hdr-left .title{font-size:1.3rem;font-weight:700;letter-spacing:-.02em;}
+.hdr-left .title span{color:var(--accent);}
+.hdr-left .sub{font-family:'Fira Mono',monospace;font-size:.68rem;color:var(--text2);margin-top:2px;}
+.hdr-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.btn-today{padding:5px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--accent);background:none;color:var(--accent);font-family:'Fira Mono',monospace;font-size:.65rem;cursor:pointer;font-weight:500;white-space:nowrap;transition:all .15s;}
+.btn-today:hover{background:var(--accent);color:#fff;}
+.prog-wrap{text-align:right;}
+.prog-label{font-family:'Fira Mono',monospace;font-size:.65rem;color:var(--text2);}
+.prog-bar-out{width:160px;height:4px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-top:5px;}
+.prog-bar-in{height:100%;background:var(--accent);border-radius:99px;transition:width .4s;}
+
+/* LAYOUT */
+.main{display:grid;grid-template-columns:210px 1fr;min-height:calc(100vh - 78px);}
+
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:.75rem 0;}
+.bloc-hdr{font-family:'Fira Mono',monospace;font-size:.57rem;color:var(--text3);padding:.5rem 1rem .15rem;text-transform:uppercase;letter-spacing:.08em;}
+.week-btn{display:flex;align-items:center;gap:6px;width:100%;padding:.42rem 1rem;border:none;background:none;cursor:pointer;text-align:left;font-family:'Fira Sans',sans-serif;font-size:.74rem;color:var(--text2);border-left:3px solid transparent;transition:background .12s;}
+.week-btn:hover{background:var(--surface2);}
+.week-btn.active{background:var(--surface2);color:var(--text);font-weight:600;border-left-color:var(--accent);}
+.week-btn.discharge{color:var(--text3);}
+.w-num{font-family:'Fira Mono',monospace;font-size:.6rem;color:var(--text3);min-width:14px;}
+.w-tag{font-size:.5rem;padding:1px 5px;border-radius:99px;font-family:'Fira Mono',monospace;}
+.tag-desc{background:var(--done-bg);color:var(--done);}
+.w-done{margin-left:auto;font-family:'Fira Mono',monospace;font-size:.57rem;color:var(--done);}
+
+/* CONTENT */
+.content{padding:1.25rem;overflow-y:auto;}
+.week-head{margin-bottom:.9rem;}
+.week-title{font-size:1.05rem;font-weight:700;letter-spacing:-.01em;}
+.week-dates{font-family:'Fira Mono',monospace;font-size:.65rem;color:var(--text3);margin-top:2px;}
+.meta-row{display:flex;gap:6px;margin-top:.5rem;flex-wrap:wrap;}
+.mpill{display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:2px 9px;font-family:'Fira Mono',monospace;font-size:.62rem;}
+
+.bloc-info{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.7rem .9rem;margin-bottom:.9rem;display:flex;align-items:flex-start;gap:9px;}
+.bloc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.bloc-name{font-weight:600;font-size:.78rem;}
+.bloc-desc{font-size:.7rem;color:var(--text2);margin-top:2px;line-height:1.5;}
+
+.tip-box{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:.6rem .85rem;margin-bottom:.9rem;font-size:.72rem;color:var(--text2);line-height:1.55;}
+
+.legend{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:.7rem;}
+.leg{display:flex;align-items:center;gap:4px;font-family:'Fira Mono',monospace;font-size:.57rem;color:var(--text2);}
+.leg-dot{width:7px;height:7px;border-radius:2px;}
+
+/* DAYS GRID */
+.days-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:1.1rem;}
+.day-card{border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);padding:8px 7px;display:flex;flex-direction:column;gap:4px;min-height:220px;transition:border-color .2s;}
+.day-card.is-rest{background:var(--surface2);}
+.day-card.is-done{border-color:var(--done);background:#f0faf5;}
+.day-card.is-today{border:2px solid var(--accent);background:#fff8f5;}
+.day-card.is-today .dn{color:var(--accent);}
+.day-card.is-today .dd{color:var(--accent);font-weight:700;font-size:.68rem;}
+.today-pip{display:inline-block;background:var(--accent);color:#fff;font-family:'Fira Mono',monospace;font-size:.5rem;padding:1px 5px;border-radius:99px;margin-left:4px;vertical-align:middle;}
+.dn{font-family:'Fira Mono',monospace;font-size:.54rem;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;}
+.dd{font-family:'Fira Mono',monospace;font-size:.58rem;color:var(--text2);}
+.dt{font-size:.71rem;font-weight:700;line-height:1.3;margin-top:1px;}
+.ds{font-size:.61rem;color:var(--text2);line-height:1.35;}
+.ddetail{font-size:.6rem;color:var(--text2);line-height:1.5;flex:1;margin-top:3px;overflow:hidden;}
+.dlabel{font-family:'Fira Sans',sans-serif;font-weight:600;color:var(--text);font-size:.56rem;text-transform:uppercase;letter-spacing:.05em;margin-top:5px;margin-bottom:3px;padding-bottom:2px;border-bottom:1px solid var(--border);}
+.ex-row{margin-bottom:3px;line-height:1.35;}
+.ex-name{font-weight:600;font-size:.59rem;color:var(--text);}
+.ex-sets{font-family:'Fira Mono',monospace;font-size:.54rem;color:var(--text2);}
+.ex-rir{font-style:italic;font-size:.53rem;color:var(--text3);}
+.mob-item{font-size:.58rem;color:var(--text2);line-height:1.4;padding-left:10px;position:relative;}
+.mob-item::before{content:"·";position:absolute;left:2px;}
+.srow{margin-bottom:2px;font-size:.6rem;}
+.srow strong{font-weight:600;color:var(--text);font-size:.58rem;}
+.chip{margin-top:4px;padding:3px 6px;border-radius:4px;font-size:.56rem;line-height:1.4;}
+.badge{display:inline-block;font-family:'Fira Mono',monospace;font-size:.52rem;padding:2px 6px;border-radius:99px;margin-top:3px;}
+.bg-gym{background:var(--gym-bg);color:var(--gym);}
+.bg-trail{background:var(--trail-bg);color:var(--trail);}
+.bg-bici{background:var(--bici-bg);color:var(--bici);}
+.bg-rest{background:var(--rest-bg);color:var(--rest);}
+.done-btn{width:100%;margin-top:auto;padding:4px 0;border-radius:var(--radius-sm);border:1px solid var(--border);background:none;font-family:'Fira Mono',monospace;font-size:.57rem;cursor:pointer;color:var(--text3);transition:all .15s;}
+.done-btn:hover{background:var(--done-bg);border-color:var(--done);color:var(--done);}
+.done-btn.marked{background:var(--done-bg);border-color:var(--done);color:var(--done);}
+
+/* NOTES */
+.notes-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem;}
+.notes-title{font-size:.76rem;font-weight:600;margin-bottom:.45rem;}
+.notes-ta{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 9px;font-family:'Fira Mono',monospace;font-size:.68rem;color:var(--text);background:var(--surface2);resize:vertical;min-height:65px;outline:none;transition:border-color .15s;line-height:1.6;}
+.notes-ta:focus{border-color:var(--accent);}
+.notes-foot{display:flex;align-items:center;gap:9px;margin-top:6px;}
+.save-btn{padding:4px 13px;border-radius:var(--radius-sm);border:none;background:var(--text);color:#fff;font-family:'Fira Mono',monospace;font-size:.62rem;cursor:pointer;}
+.save-btn:hover{opacity:.8;}
+.saved-msg{font-family:'Fira Mono',monospace;font-size:.6rem;color:var(--done);opacity:0;transition:opacity .3s;}
+.saved-msg.show{opacity:1;}
+
+@media(max-width:960px){
+  .main{grid-template-columns:1fr;}
+  .sidebar{display:flex;flex-wrap:nowrap;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border);padding:.35rem;max-height:60px;}
+  .bloc-group{display:contents;}
+  .bloc-hdr{display:none;}
+  .week-btn{min-width:60px;white-space:nowrap;border-left:none;border-bottom:2px solid transparent;border-radius:var(--radius-sm);padding:.3rem .55rem;}
+  .week-btn.active{border-bottom-color:var(--accent);border-left-color:transparent;}
+  .days-grid{grid-template-columns:repeat(4,1fr);}
+}
+@media(max-width:600px){
+  .days-grid{grid-template-columns:repeat(2,1fr);}
+  header{padding:.9rem 1rem;}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="hdr-left">
+    <div class="title">Pla 90 dies · <span>Força + Cardio</span></div>
+    <div class="sub">22 jun 2026 → 19 set 2026 · Push/Pull/Cames · Trail · Bici carretera</div>
+  </div>
+  <div class="hdr-right">
+    <button class="btn-today" onclick="goToday()">→ Avui</button>
+    <div class="prog-wrap">
+      <div class="prog-label" id="prog-label">0 / 90 dies completats</div>
+      <div class="prog-bar-out"><div class="prog-bar-in" id="prog-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <nav class="sidebar" id="sidebar"></nav>
+  <div class="content" id="content"></div>
+</div>
+
+<script>
+const STORAGE_KEY = 'pla90_v1';
+const MONTHS_CA = ['gen','feb','mar','abr','mai','jun','jul','ago','set','oct','nov','des'];
+const DAYS_CA = ['Dl','Dt','Dc','Dj','Dv','Ds','Dg'];
+const DAYS_FULL = ['Dilluns','Dimarts','Dimecres','Dijous','Divendres','Dissabte','Diumenge'];
+
+const PLAN = {"blocks": [{"name": "Bloc 1 · Base", "desc": "Establir rutina, adaptar el cos a la nova càrrega combinada. Cardio suau.", "color": "#b5d4f4"}, {"name": "Bloc 2 · Construcció", "desc": "Augmentar volum de bici i intensitat de trail. Progressió en força.", "color": "#c0dd97"}, {"name": "Bloc 3 · Específic", "desc": "Sessions llargues de bici, trail amb desnivell, força en manteniment.", "color": "#fac775"}], "days": [{"day": 1, "date": "2026-06-22", "dow": 0, "week": 1, "block": 0, "discharge": false, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}, {"ex": "Elevacions laterals", "sets": "4 × 12-15", "rir": "RIR 1"}, {"ex": "Tríceps politja corda", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Tríceps francès", "sets": "2 × 10-12", "rir": "finalitzador"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": ""}}, {"day": 2, "date": "2026-06-23", "dow": 1, "week": 1, "block": 0, "discharge": false, "type": "trail", "title": "Trail", "subtitle": "5-6 km · 100-150 D+", "badge": "trail", "detail": {"km": "5-6", "desnivell": "100-150 D+", "durada": "35-45 min", "zona": "Zona 2", "sensacio": "Còmode, pots parlar", "series": "Cap — rodatge continu", "tip": "Ritme molt conservador. Acostumar tendons."}}, {"day": 3, "date": "2026-06-24", "dow": 2, "week": 1, "block": 0, "discharge": false, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}, {"ex": "Face pull a politja", "sets": "3 × 15", "rir": "salut espatlla"}, {"ex": "Curl bíceps barra Z", "sets": "3 × 8-10", "rir": "RIR 1"}, {"ex": "Curl martell manuelles", "sets": "3 × 10-12", "rir": ""}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": ""}}, {"day": 4, "date": "2026-06-25", "dow": 3, "week": 1, "block": 0, "discharge": false, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 5, "date": "2026-06-26", "dow": 4, "week": 1, "block": 0, "discharge": false, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Extensions quàdriceps", "sets": "3 × 12-15", "rir": "apura rang"}, {"ex": "Bessons asseguts", "sets": "4 × 12-15", "rir": "pausa 1s a baix"}, {"ex": "Planxa frontal", "sets": "3 × 45-60s", "rir": "glutis activats"}, {"ex": "Elevacions cames penjat", "sets": "3 × 10-15", "rir": ""}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": ""}}, {"day": 6, "date": "2026-06-27", "dow": 5, "week": 1, "block": 0, "discharge": false, "type": "bici", "title": "Bici de carretera", "subtitle": "25-35 km · 60-80 min", "badge": "bici", "detail": {"km": "25-35", "durada": "60-80 min", "zona": "Zona 2", "cadencia": "80-90 rpm", "wats": "~130-160W", "tip": "Sortida plana o lleugerament ondulada. No forçar."}}, {"day": 7, "date": "2026-06-28", "dow": 6, "week": 1, "block": 0, "discharge": false, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 8, "date": "2026-06-29", "dow": 0, "week": 2, "block": 0, "discharge": false, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}, {"ex": "Elevacions laterals", "sets": "4 × 12-15", "rir": "RIR 1"}, {"ex": "Tríceps politja corda", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Tríceps francès", "sets": "2 × 10-12", "rir": "finalitzador"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": ""}}, {"day": 9, "date": "2026-06-30", "dow": 1, "week": 2, "block": 0, "discharge": false, "type": "trail", "title": "Trail", "subtitle": "5-6 km · 100-150 D+", "badge": "trail", "detail": {"km": "5-6", "desnivell": "100-150 D+", "durada": "35-45 min", "zona": "Zona 2", "sensacio": "Còmode, pots parlar", "series": "Cap — rodatge continu", "tip": "Ritme molt conservador. Acostumar tendons."}}, {"day": 10, "date": "2026-07-01", "dow": 2, "week": 2, "block": 0, "discharge": false, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}, {"ex": "Face pull a politja", "sets": "3 × 15", "rir": "salut espatlla"}, {"ex": "Curl bíceps barra Z", "sets": "3 × 8-10", "rir": "RIR 1"}, {"ex": "Curl martell manuelles", "sets": "3 × 10-12", "rir": ""}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": ""}}, {"day": 11, "date": "2026-07-02", "dow": 3, "week": 2, "block": 0, "discharge": false, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 12, "date": "2026-07-03", "dow": 4, "week": 2, "block": 0, "discharge": false, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Extensions quàdriceps", "sets": "3 × 12-15", "rir": "apura rang"}, {"ex": "Bessons asseguts", "sets": "4 × 12-15", "rir": "pausa 1s a baix"}, {"ex": "Planxa frontal", "sets": "3 × 45-60s", "rir": "glutis activats"}, {"ex": "Elevacions cames penjat", "sets": "3 × 10-15", "rir": ""}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": ""}}, {"day": 13, "date": "2026-07-04", "dow": 5, "week": 2, "block": 0, "discharge": false, "type": "bici", "title": "Bici de carretera", "subtitle": "25-35 km · 60-80 min", "badge": "bici", "detail": {"km": "25-35", "durada": "60-80 min", "zona": "Zona 2", "cadencia": "80-90 rpm", "wats": "~130-160W", "tip": "Sortida plana o lleugerament ondulada. No forçar."}}, {"day": 14, "date": "2026-07-05", "dow": 6, "week": 2, "block": 0, "discharge": false, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 15, "date": "2026-07-06", "dow": 0, "week": 3, "block": 0, "discharge": false, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}, {"ex": "Elevacions laterals", "sets": "4 × 12-15", "rir": "RIR 1"}, {"ex": "Tríceps politja corda", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Tríceps francès", "sets": "2 × 10-12", "rir": "finalitzador"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": ""}}, {"day": 16, "date": "2026-07-07", "dow": 1, "week": 3, "block": 0, "discharge": false, "type": "trail", "title": "Trail", "subtitle": "5-6 km · 100-150 D+", "badge": "trail", "detail": {"km": "5-6", "desnivell": "100-150 D+", "durada": "35-45 min", "zona": "Zona 2", "sensacio": "Còmode, pots parlar", "series": "Cap — rodatge continu", "tip": "Ritme molt conservador. Acostumar tendons."}}, {"day": 17, "date": "2026-07-08", "dow": 2, "week": 3, "block": 0, "discharge": false, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}, {"ex": "Face pull a politja", "sets": "3 × 15", "rir": "salut espatlla"}, {"ex": "Curl bíceps barra Z", "sets": "3 × 8-10", "rir": "RIR 1"}, {"ex": "Curl martell manuelles", "sets": "3 × 10-12", "rir": ""}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": ""}}, {"day": 18, "date": "2026-07-09", "dow": 3, "week": 3, "block": 0, "discharge": false, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 19, "date": "2026-07-10", "dow": 4, "week": 3, "block": 0, "discharge": false, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Extensions quàdriceps", "sets": "3 × 12-15", "rir": "apura rang"}, {"ex": "Bessons asseguts", "sets": "4 × 12-15", "rir": "pausa 1s a baix"}, {"ex": "Planxa frontal", "sets": "3 × 45-60s", "rir": "glutis activats"}, {"ex": "Elevacions cames penjat", "sets": "3 × 10-15", "rir": ""}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": ""}}, {"day": 20, "date": "2026-07-11", "dow": 5, "week": 3, "block": 0, "discharge": false, "type": "bici", "title": "Bici de carretera", "subtitle": "25-35 km · 60-80 min", "badge": "bici", "detail": {"km": "25-35", "durada": "60-80 min", "zona": "Zona 2", "cadencia": "80-90 rpm", "wats": "~130-160W", "tip": "Sortida plana o lleugerament ondulada. No forçar."}}, {"day": 21, "date": "2026-07-12", "dow": 6, "week": 3, "block": 0, "discharge": false, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 22, "date": "2026-07-13", "dow": 0, "week": 4, "block": 0, "discharge": true, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": "Volum reduït — descàrrega"}}, {"day": 23, "date": "2026-07-14", "dow": 1, "week": 4, "block": 0, "discharge": true, "type": "trail", "title": "Trail suau", "subtitle": "20-25 min zona 1-2", "badge": "trail", "detail": {"km": "4-5", "desnivell": "pla", "durada": "20-25 min", "zona": "Zona 1-2", "sensacio": "Molt còmode, podries cantar", "series": "Cap", "tip": "Semana de descàrrega: no forçar."}}, {"day": 24, "date": "2026-07-15", "dow": 2, "week": 4, "block": 0, "discharge": true, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": "Volum reduït — descàrrega"}}, {"day": 25, "date": "2026-07-16", "dow": 3, "week": 4, "block": 0, "discharge": true, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 26, "date": "2026-07-17", "dow": 4, "week": 4, "block": 0, "discharge": true, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": "Volum reduït — descàrrega"}}, {"day": 27, "date": "2026-07-18", "dow": 5, "week": 4, "block": 0, "discharge": true, "type": "bici", "title": "Bici suau", "subtitle": "30-40 km · zona 1-2", "badge": "bici", "detail": {"km": "25-30", "durada": "60-70 min", "zona": "Zona 1-2", "cadencia": "80-85 rpm", "wats": "—", "tip": "Sortida tranquil·la. Res d'intensitat."}}, {"day": 28, "date": "2026-07-19", "dow": 6, "week": 4, "block": 0, "discharge": true, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 29, "date": "2026-07-20", "dow": 0, "week": 5, "block": 1, "discharge": false, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}, {"ex": "Elevacions laterals", "sets": "4 × 12-15", "rir": "RIR 1"}, {"ex": "Tríceps politja corda", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Tríceps francès", "sets": "2 × 10-12", "rir": "finalitzador"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": ""}}, {"day": 30, "date": "2026-07-21", "dow": 1, "week": 5, "block": 1, "discharge": false, "type": "trail", "title": "Trail", "subtitle": "8-10 km · 250-400 D+", "badge": "trail", "detail": {"km": "8-10", "desnivell": "250-400 D+", "durada": "50-70 min", "zona": "Zona 2-3", "sensacio": "Còmode-dur, frases curtes", "series": "Opcional: 4×2 min pujada suau", "tip": "Incorpora un petit tram de pujada a la meitat."}}, {"day": 31, "date": "2026-07-22", "dow": 2, "week": 5, "block": 1, "discharge": false, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}, {"ex": "Face pull a politja", "sets": "3 × 15", "rir": "salut espatlla"}, {"ex": "Curl bíceps barra Z", "sets": "3 × 8-10", "rir": "RIR 1"}, {"ex": "Curl martell manuelles", "sets": "3 × 10-12", "rir": ""}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": ""}}, {"day": 32, "date": "2026-07-23", "dow": 3, "week": 5, "block": 1, "discharge": false, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 33, "date": "2026-07-24", "dow": 4, "week": 5, "block": 1, "discharge": false, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Extensions quàdriceps", "sets": "3 × 12-15", "rir": "apura rang"}, {"ex": "Bessons asseguts", "sets": "4 × 12-15", "rir": "pausa 1s a baix"}, {"ex": "Planxa frontal", "sets": "3 × 45-60s", "rir": "glutis activats"}, {"ex": "Elevacions cames penjat", "sets": "3 × 10-15", "rir": ""}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": ""}}, {"day": 34, "date": "2026-07-25", "dow": 5, "week": 5, "block": 1, "discharge": false, "type": "bici", "title": "Bici de carretera", "subtitle": "40-55 km · 90-110 min", "badge": "bici", "detail": {"km": "40-55", "durada": "90-110 min", "zona": "Zona 2-3", "cadencia": "85-95 rpm", "wats": "~150-180W", "tip": "Inclou 2-3 pujades moderades. Prova de mantenir zona 2 a les pujades."}}, {"day": 35, "date": "2026-07-26", "dow": 6, "week": 5, "block": 1, "discharge": false, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 36, "date": "2026-07-27", "dow": 0, "week": 6, "block": 1, "discharge": false, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}, {"ex": "Elevacions laterals", "sets": "4 × 12-15", "rir": "RIR 1"}, {"ex": "Tríceps politja corda", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Tríceps francès", "sets": "2 × 10-12", "rir": "finalitzador"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": ""}}, {"day": 37, "date": "2026-07-28", "dow": 1, "week": 6, "block": 1, "discharge": false, "type": "trail", "title": "Trail", "subtitle": "8-10 km · 250-400 D+", "badge": "trail", "detail": {"km": "8-10", "desnivell": "250-400 D+", "durada": "50-70 min", "zona": "Zona 2-3", "sensacio": "Còmode-dur, frases curtes", "series": "Opcional: 4×2 min pujada suau", "tip": "Incorpora un petit tram de pujada a la meitat."}}, {"day": 38, "date": "2026-07-29", "dow": 2, "week": 6, "block": 1, "discharge": false, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}, {"ex": "Face pull a politja", "sets": "3 × 15", "rir": "salut espatlla"}, {"ex": "Curl bíceps barra Z", "sets": "3 × 8-10", "rir": "RIR 1"}, {"ex": "Curl martell manuelles", "sets": "3 × 10-12", "rir": ""}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": ""}}, {"day": 39, "date": "2026-07-30", "dow": 3, "week": 6, "block": 1, "discharge": false, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 40, "date": "2026-07-31", "dow": 4, "week": 6, "block": 1, "discharge": false, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Extensions quàdriceps", "sets": "3 × 12-15", "rir": "apura rang"}, {"ex": "Bessons asseguts", "sets": "4 × 12-15", "rir": "pausa 1s a baix"}, {"ex": "Planxa frontal", "sets": "3 × 45-60s", "rir": "glutis activats"}, {"ex": "Elevacions cames penjat", "sets": "3 × 10-15", "rir": ""}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": ""}}, {"day": 41, "date": "2026-08-01", "dow": 5, "week": 6, "block": 1, "discharge": false, "type": "bici", "title": "Bici de carretera", "subtitle": "40-55 km · 90-110 min", "badge": "bici", "detail": {"km": "40-55", "durada": "90-110 min", "zona": "Zona 2-3", "cadencia": "85-95 rpm", "wats": "~150-180W", "tip": "Inclou 2-3 pujades moderades. Prova de mantenir zona 2 a les pujades."}}, {"day": 42, "date": "2026-08-02", "dow": 6, "week": 6, "block": 1, "discharge": false, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 43, "date": "2026-08-03", "dow": 0, "week": 7, "block": 1, "discharge": false, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}, {"ex": "Elevacions laterals", "sets": "4 × 12-15", "rir": "RIR 1"}, {"ex": "Tríceps politja corda", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Tríceps francès", "sets": "2 × 10-12", "rir": "finalitzador"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": ""}}, {"day": 44, "date": "2026-08-04", "dow": 1, "week": 7, "block": 1, "discharge": false, "type": "trail", "title": "Trail", "subtitle": "8-10 km · 250-400 D+", "badge": "trail", "detail": {"km": "8-10", "desnivell": "250-400 D+", "durada": "50-70 min", "zona": "Zona 2-3", "sensacio": "Còmode-dur, frases curtes", "series": "Opcional: 4×2 min pujada suau", "tip": "Incorpora un petit tram de pujada a la meitat."}}, {"day": 45, "date": "2026-08-05", "dow": 2, "week": 7, "block": 1, "discharge": false, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}, {"ex": "Face pull a politja", "sets": "3 × 15", "rir": "salut espatlla"}, {"ex": "Curl bíceps barra Z", "sets": "3 × 8-10", "rir": "RIR 1"}, {"ex": "Curl martell manuelles", "sets": "3 × 10-12", "rir": ""}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": ""}}, {"day": 46, "date": "2026-08-06", "dow": 3, "week": 7, "block": 1, "discharge": false, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 47, "date": "2026-08-07", "dow": 4, "week": 7, "block": 1, "discharge": false, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Extensions quàdriceps", "sets": "3 × 12-15", "rir": "apura rang"}, {"ex": "Bessons asseguts", "sets": "4 × 12-15", "rir": "pausa 1s a baix"}, {"ex": "Planxa frontal", "sets": "3 × 45-60s", "rir": "glutis activats"}, {"ex": "Elevacions cames penjat", "sets": "3 × 10-15", "rir": ""}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": ""}}, {"day": 48, "date": "2026-08-08", "dow": 5, "week": 7, "block": 1, "discharge": false, "type": "bici", "title": "Bici de carretera", "subtitle": "40-55 km · 90-110 min", "badge": "bici", "detail": {"km": "40-55", "durada": "90-110 min", "zona": "Zona 2-3", "cadencia": "85-95 rpm", "wats": "~150-180W", "tip": "Inclou 2-3 pujades moderades. Prova de mantenir zona 2 a les pujades."}}, {"day": 49, "date": "2026-08-09", "dow": 6, "week": 7, "block": 1, "discharge": false, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 50, "date": "2026-08-10", "dow": 0, "week": 8, "block": 1, "discharge": true, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": "Volum reduït — descàrrega"}}, {"day": 51, "date": "2026-08-11", "dow": 1, "week": 8, "block": 1, "discharge": true, "type": "trail", "title": "Trail suau", "subtitle": "20-25 min zona 1-2", "badge": "trail", "detail": {"km": "4-5", "desnivell": "pla", "durada": "20-25 min", "zona": "Zona 1-2", "sensacio": "Molt còmode, podries cantar", "series": "Cap", "tip": "Semana de descàrrega: no forçar."}}, {"day": 52, "date": "2026-08-12", "dow": 2, "week": 8, "block": 1, "discharge": true, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": "Volum reduït — descàrrega"}}, {"day": 53, "date": "2026-08-13", "dow": 3, "week": 8, "block": 1, "discharge": true, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 54, "date": "2026-08-14", "dow": 4, "week": 8, "block": 1, "discharge": true, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": "Volum reduït — descàrrega"}}, {"day": 55, "date": "2026-08-15", "dow": 5, "week": 8, "block": 1, "discharge": true, "type": "bici", "title": "Bici suau", "subtitle": "30-40 km · zona 1-2", "badge": "bici", "detail": {"km": "25-30", "durada": "60-70 min", "zona": "Zona 1-2", "cadencia": "80-85 rpm", "wats": "—", "tip": "Sortida tranquil·la. Res d'intensitat."}}, {"day": 56, "date": "2026-08-16", "dow": 6, "week": 8, "block": 1, "discharge": true, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 57, "date": "2026-08-17", "dow": 0, "week": 9, "block": 1, "discharge": false, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}, {"ex": "Elevacions laterals", "sets": "4 × 12-15", "rir": "RIR 1"}, {"ex": "Tríceps politja corda", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Tríceps francès", "sets": "2 × 10-12", "rir": "finalitzador"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": ""}}, {"day": 58, "date": "2026-08-18", "dow": 1, "week": 9, "block": 1, "discharge": false, "type": "trail", "title": "Trail", "subtitle": "8-10 km · 250-400 D+", "badge": "trail", "detail": {"km": "8-10", "desnivell": "250-400 D+", "durada": "50-70 min", "zona": "Zona 2-3", "sensacio": "Còmode-dur, frases curtes", "series": "Opcional: 4×2 min pujada suau", "tip": "Incorpora un petit tram de pujada a la meitat."}}, {"day": 59, "date": "2026-08-19", "dow": 2, "week": 9, "block": 1, "discharge": false, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}, {"ex": "Face pull a politja", "sets": "3 × 15", "rir": "salut espatlla"}, {"ex": "Curl bíceps barra Z", "sets": "3 × 8-10", "rir": "RIR 1"}, {"ex": "Curl martell manuelles", "sets": "3 × 10-12", "rir": ""}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": ""}}, {"day": 60, "date": "2026-08-20", "dow": 3, "week": 9, "block": 1, "discharge": false, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 61, "date": "2026-08-21", "dow": 4, "week": 9, "block": 1, "discharge": false, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Extensions quàdriceps", "sets": "3 × 12-15", "rir": "apura rang"}, {"ex": "Bessons asseguts", "sets": "4 × 12-15", "rir": "pausa 1s a baix"}, {"ex": "Planxa frontal", "sets": "3 × 45-60s", "rir": "glutis activats"}, {"ex": "Elevacions cames penjat", "sets": "3 × 10-15", "rir": ""}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": ""}}, {"day": 62, "date": "2026-08-22", "dow": 5, "week": 9, "block": 1, "discharge": false, "type": "bici", "title": "Bici de carretera", "subtitle": "40-55 km · 90-110 min", "badge": "bici", "detail": {"km": "40-55", "durada": "90-110 min", "zona": "Zona 2-3", "cadencia": "85-95 rpm", "wats": "~150-180W", "tip": "Inclou 2-3 pujades moderades. Prova de mantenir zona 2 a les pujades."}}, {"day": 63, "date": "2026-08-23", "dow": 6, "week": 9, "block": 1, "discharge": false, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 64, "date": "2026-08-24", "dow": 0, "week": 10, "block": 2, "discharge": false, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}, {"ex": "Elevacions laterals", "sets": "4 × 12-15", "rir": "RIR 1"}, {"ex": "Tríceps politja corda", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Tríceps francès", "sets": "2 × 10-12", "rir": "finalitzador"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": ""}}, {"day": 65, "date": "2026-08-25", "dow": 1, "week": 10, "block": 2, "discharge": false, "type": "trail", "title": "Trail", "subtitle": "12-15 km · 400-600 D+", "badge": "trail", "detail": {"km": "12-15", "desnivell": "400-600 D+", "durada": "75-100 min", "zona": "Zona 2-3", "sensacio": "Sostingut però controlat", "series": "6×45s pujada forta si el terreny ho permet", "tip": "Gestiona nutrició: 1 gel si passa d'1h."}}, {"day": 66, "date": "2026-08-26", "dow": 2, "week": 10, "block": 2, "discharge": false, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}, {"ex": "Face pull a politja", "sets": "3 × 15", "rir": "salut espatlla"}, {"ex": "Curl bíceps barra Z", "sets": "3 × 8-10", "rir": "RIR 1"}, {"ex": "Curl martell manuelles", "sets": "3 × 10-12", "rir": ""}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": ""}}, {"day": 67, "date": "2026-08-27", "dow": 3, "week": 10, "block": 2, "discharge": false, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 68, "date": "2026-08-28", "dow": 4, "week": 10, "block": 2, "discharge": false, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Extensions quàdriceps", "sets": "3 × 12-15", "rir": "apura rang"}, {"ex": "Bessons asseguts", "sets": "4 × 12-15", "rir": "pausa 1s a baix"}, {"ex": "Planxa frontal", "sets": "3 × 45-60s", "rir": "glutis activats"}, {"ex": "Elevacions cames penjat", "sets": "3 × 10-15", "rir": ""}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": ""}}, {"day": 69, "date": "2026-08-29", "dow": 5, "week": 10, "block": 2, "discharge": false, "type": "bici", "title": "Bici de carretera", "subtitle": "60-80 km · 120-150 min", "badge": "bici", "detail": {"km": "60-80", "durada": "120-150 min", "zona": "Zona 2-3", "cadencia": "85-95 rpm", "wats": "~160-190W", "tip": "Sortida llarga amb desnivell. Porta menjar i electròlits."}}, {"day": 70, "date": "2026-08-30", "dow": 6, "week": 10, "block": 2, "discharge": false, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 71, "date": "2026-08-31", "dow": 0, "week": 11, "block": 2, "discharge": false, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}, {"ex": "Elevacions laterals", "sets": "4 × 12-15", "rir": "RIR 1"}, {"ex": "Tríceps politja corda", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Tríceps francès", "sets": "2 × 10-12", "rir": "finalitzador"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": ""}}, {"day": 72, "date": "2026-09-01", "dow": 1, "week": 11, "block": 2, "discharge": false, "type": "trail", "title": "Trail", "subtitle": "12-15 km · 400-600 D+", "badge": "trail", "detail": {"km": "12-15", "desnivell": "400-600 D+", "durada": "75-100 min", "zona": "Zona 2-3", "sensacio": "Sostingut però controlat", "series": "6×45s pujada forta si el terreny ho permet", "tip": "Gestiona nutrició: 1 gel si passa d'1h."}}, {"day": 73, "date": "2026-09-02", "dow": 2, "week": 11, "block": 2, "discharge": false, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}, {"ex": "Face pull a politja", "sets": "3 × 15", "rir": "salut espatlla"}, {"ex": "Curl bíceps barra Z", "sets": "3 × 8-10", "rir": "RIR 1"}, {"ex": "Curl martell manuelles", "sets": "3 × 10-12", "rir": ""}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": ""}}, {"day": 74, "date": "2026-09-03", "dow": 3, "week": 11, "block": 2, "discharge": false, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 75, "date": "2026-09-04", "dow": 4, "week": 11, "block": 2, "discharge": false, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Extensions quàdriceps", "sets": "3 × 12-15", "rir": "apura rang"}, {"ex": "Bessons asseguts", "sets": "4 × 12-15", "rir": "pausa 1s a baix"}, {"ex": "Planxa frontal", "sets": "3 × 45-60s", "rir": "glutis activats"}, {"ex": "Elevacions cames penjat", "sets": "3 × 10-15", "rir": ""}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": ""}}, {"day": 76, "date": "2026-09-05", "dow": 5, "week": 11, "block": 2, "discharge": false, "type": "bici", "title": "Bici de carretera", "subtitle": "60-80 km · 120-150 min", "badge": "bici", "detail": {"km": "60-80", "durada": "120-150 min", "zona": "Zona 2-3", "cadencia": "85-95 rpm", "wats": "~160-190W", "tip": "Sortida llarga amb desnivell. Porta menjar i electròlits."}}, {"day": 77, "date": "2026-09-06", "dow": 6, "week": 11, "block": 2, "discharge": false, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 78, "date": "2026-09-07", "dow": 0, "week": 12, "block": 2, "discharge": true, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": "Volum reduït — descàrrega"}}, {"day": 79, "date": "2026-09-08", "dow": 1, "week": 12, "block": 2, "discharge": true, "type": "trail", "title": "Trail suau", "subtitle": "20-25 min zona 1-2", "badge": "trail", "detail": {"km": "4-5", "desnivell": "pla", "durada": "20-25 min", "zona": "Zona 1-2", "sensacio": "Molt còmode, podries cantar", "series": "Cap", "tip": "Semana de descàrrega: no forçar."}}, {"day": 80, "date": "2026-09-09", "dow": 2, "week": 12, "block": 2, "discharge": true, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": "Volum reduït — descàrrega"}}, {"day": 81, "date": "2026-09-10", "dow": 3, "week": 12, "block": 2, "discharge": true, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 82, "date": "2026-09-11", "dow": 4, "week": 12, "block": 2, "discharge": true, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": "Volum reduït — descàrrega"}}, {"day": 83, "date": "2026-09-12", "dow": 5, "week": 12, "block": 2, "discharge": true, "type": "bici", "title": "Bici suau", "subtitle": "30-40 km · zona 1-2", "badge": "bici", "detail": {"km": "25-30", "durada": "60-70 min", "zona": "Zona 1-2", "cadencia": "80-85 rpm", "wats": "—", "tip": "Sortida tranquil·la. Res d'intensitat."}}, {"day": 84, "date": "2026-09-13", "dow": 6, "week": 12, "block": 2, "discharge": true, "type": "rest", "title": "Descans", "subtitle": "Recuperació total", "badge": "rest", "detail": {"tip": "Descans complet. Dorm bé, hidrata't."}}, {"day": 85, "date": "2026-09-14", "dow": 0, "week": 13, "block": 2, "discharge": false, "type": "push", "title": "Gimnàs · Push", "subtitle": "Pit · Espatlla · Tríceps", "badge": "gym", "detail": {"exercises": [{"ex": "Press banca amb barra", "sets": "4 × 5-7", "rir": "RIR 2"}, {"ex": "Press militar manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Press inclinat manuelles", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Obertures politja", "sets": "3 × 12-15", "rir": "RIR 1"}, {"ex": "Elevacions laterals", "sets": "4 × 12-15", "rir": "RIR 1"}, {"ex": "Tríceps politja corda", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Tríceps francès", "sets": "2 × 10-12", "rir": "finalitzador"}], "mobility": ["Rotació toràcica en quadrupèdia · 10 reps/costat", "Obertura pit amb foam roller · 60 s", "Pec stretch en bastidor · 30 s/costat"], "note": ""}}, {"day": 86, "date": "2026-09-15", "dow": 1, "week": 13, "block": 2, "discharge": false, "type": "trail", "title": "Trail", "subtitle": "12-15 km · 400-600 D+", "badge": "trail", "detail": {"km": "12-15", "desnivell": "400-600 D+", "durada": "75-100 min", "zona": "Zona 2-3", "sensacio": "Sostingut però controlat", "series": "6×45s pujada forta si el terreny ho permet", "tip": "Gestiona nutrició: 1 gel si passa d'1h."}}, {"day": 87, "date": "2026-09-16", "dow": 2, "week": 13, "block": 2, "discharge": false, "type": "pull", "title": "Gimnàs · Pull", "subtitle": "Esquena · Bíceps · Femoral", "badge": "gym", "detail": {"exercises": [{"ex": "Pes mort romanès", "sets": "4 × 5-6", "rir": "RIR 2-3"}, {"ex": "Dominades / jalón pit", "sets": "4 × 6-10", "rir": "amb llast si >10"}, {"ex": "Rem amb barra", "sets": "3 × 8-10", "rir": "RIR 2"}, {"ex": "Rem politja baixa", "sets": "3 × 10-12", "rir": "agafada neutra"}, {"ex": "Face pull a politja", "sets": "3 × 15", "rir": "salut espatlla"}, {"ex": "Curl bíceps barra Z", "sets": "3 × 8-10", "rir": "RIR 1"}, {"ex": "Curl martell manuelles", "sets": "3 × 10-12", "rir": ""}], "mobility": ["Gat-camell · 10 reps lentes", "Child's pose amb braços oberts · 60 s", "Estirament lats en bastidor · 30 s/costat"], "note": ""}}, {"day": 88, "date": "2026-09-17", "dow": 3, "week": 13, "block": 2, "discharge": false, "type": "rest", "title": "Descans actiu", "subtitle": "Camina 20-30 min si vols · Estira", "badge": "rest", "detail": {"tip": "Recuperació. Mobilitat general o caminar suau. Res d'intensitat."}}, {"day": 89, "date": "2026-09-18", "dow": 4, "week": 13, "block": 2, "discharge": false, "type": "legs", "title": "Gimnàs · Cames", "subtitle": "Cames + Core", "badge": "gym", "detail": {"exercises": [{"ex": "Sentadilla amb barra", "sets": "4 × 5-8", "rir": "RIR 2"}, {"ex": "Premsa de cames", "sets": "3 × 10-12", "rir": "peus centrats"}, {"ex": "Corbes femoral estirat", "sets": "3 × 10-12", "rir": "RIR 1"}, {"ex": "Extensions quàdriceps", "sets": "3 × 12-15", "rir": "apura rang"}, {"ex": "Bessons asseguts", "sets": "4 × 12-15", "rir": "pausa 1s a baix"}, {"ex": "Planxa frontal", "sets": "3 × 45-60s", "rir": "glutis activats"}, {"ex": "Elevacions cames penjat", "sets": "3 × 10-15", "rir": ""}], "mobility": ["Hip flexor stretch en estocada · 45 s/costat", "Pigeon pose · 60 s/costat", "Mobilitat maluc en cercles · 10 reps/costat"], "note": ""}}, {"day": 90, "date": "2026-09-19", "dow": 5, "week": 13, "block": 2, "discharge": false, "type": "bici", "title": "Bici de carretera", "subtitle": "60-80 km · 120-150 min", "badge": "bici", "detail": {"km": "60-80", "durada": "120-150 min", "zona": "Zona 2-3", "cadencia": "85-95 rpm", "wats": "~160-190W", "tip": "Sortida llarga amb desnivell. Porta menjar i electròlits."}}]};
+
+const START = new Date(2026, 5, 22);
+
+function fmtDate(iso){
+  const d=new Date(iso+'T00:00:00');
+  return `${d.getDate()} ${MONTHS_CA[d.getMonth()]}`;
+}
+function weekRange(days){
+  if(!days.length)return'';
+  const s=fmtDate(days[0].date),e=fmtDate(days[days.length-1].date);
+  return `${s} – ${e}`;
+}
+
+// Group days into weeks
+const weeks=[];
+for(let i=0;i<PLAN.days.length;i+=7){
+  weeks.push(PLAN.days.slice(i,Math.min(i+7,PLAN.days.length)));
+}
+
+// State
+let state={},curWeek=0;
+function load(){try{state=JSON.parse(localStorage.getItem(STORAGE_KEY))||{};}catch(e){state={};}}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+function dk(day){return`d${day}`;}
+function nk(week){return`n_w${week}`;}
+function doneDays(){return PLAN.days.filter(d=>state[dk(d.day)]).length;}
+
+function detailHtml(day){
+  const det=day.detail;
+  if(day.type==='push'||day.type==='pull'||day.type==='legs'){
+    let h='';
+    if(det.note) h+=`<div style="font-size:.57rem;color:var(--accent);margin-bottom:4px;font-weight:500">${det.note}</div>`;
+    h+=`<div class="dlabel">Exercicis</div>`;
+    det.exercises.forEach(e=>{
+      h+=`<div class="ex-row"><span class="ex-name">${e.ex}</span> <span class="ex-sets">${e.sets}</span>${e.rir?` <span class="ex-rir">· ${e.rir}</span>`:''}</div>`;
+    });
+    h+=`<div class="dlabel">Mobilitat</div>`;
+    det.mobility.forEach(m=>{h+=`<div class="mob-item">${m}</div>`;});
+    return h;
+  }
+  if(day.type==='trail'||day.type==='bici'){
+    let h=`<div class="dlabel">${day.type==='trail'?'Trail':'Bici carretera'}</div>`;
+    if(det.km) h+=`<div class="srow"><strong>Km</strong> ${det.km}</div>`;
+    if(det.desnivell||det.d) h+=`<div class="srow"><strong>D+</strong> ${det.desnivell||det.d}</div>`;
+    if(det.durada) h+=`<div class="srow"><strong>Durada</strong> ${det.durada}</div>`;
+    if(det.zona) h+=`<div class="srow"><strong>Zona</strong> ${det.zona}</div>`;
+    if(det.sensacio) h+=`<div class="srow"><strong>Sensació</strong> ${det.sensacio}</div>`;
+    if(det.cadencia) h+=`<div class="srow"><strong>Cadència</strong> ${det.cadencia}</div>`;
+    if(det.wats) h+=`<div class="srow"><strong>Watts est.</strong> ${det.wats}</div>`;
+    if(det.series) h+=`<div class="srow"><strong>Sèries</strong> ${det.series}</div>`;
+    if(det.tip) h+=`<div class="chip" style="background:${day.type==='trail'?'var(--trail-bg)':'var(--bici-bg)'};color:${day.type==='trail'?'var(--trail)':'var(--bici)'}">${det.tip}</div>`;
+    return h;
+  }
+  if(day.type==='rest'){
+    return`<div class="srow" style="margin-top:4px;font-size:.62rem;color:var(--text2);line-height:1.5">${det.tip||'Descans i recuperació.'}</div>`;
+  }
+  return '';
+}
+
+function badgeClass(d){
+  if(d.type==='push'||d.type==='pull'||d.type==='legs')return'bg-gym';
+  if(d.type==='trail')return'bg-trail';
+  if(d.type==='bici')return'bg-bici';
+  return'bg-rest';
+}
+function badgeLabel(d){
+  if(d.type==='push')return'Push';
+  if(d.type==='pull')return'Pull';
+  if(d.type==='legs')return'Cames';
+  if(d.type==='trail')return'Trail';
+  if(d.type==='bici')return'Bici';
+  return'Descans';
+}
+
+function renderSidebar(){
+  let h='';
+  let curBlock=-1;
+  weeks.forEach((wdays,wi)=>{
+    const block=wdays[0].block;
+    const wn=wi+1;
+    const bdata=PLAN.blocks[block];
+    if(block!==curBlock){
+      curBlock=block;
+      h+=`<div class="bloc-group"><div class="bloc-hdr">${bdata.name}</div>`;
+    }
+    const doneC=wdays.filter(d=>d.type!=='rest'&&state[dk(d.day)]).length;
+    const totalC=wdays.filter(d=>d.type!=='rest').length;
+    const isDischarge=wdays[0].discharge;
+    const tag=isDischarge?'<span class="w-tag tag-desc">desc</span>':'';
+    h+=`<button class="week-btn${wi===curWeek?' active':''}${isDischarge?' discharge':''}" onclick="sel(${wi})">
+      <span class="w-num">${wn}</span>
+      <span style="flex:1">${fmtDate(wdays[0].date)} ${tag}</span>
+      ${doneC>0?`<span class="w-done">${doneC}/${totalC}</span>`:''}
+    </button>`;
+    // Close bloc group when block changes (approximate)
+    if(wi===weeks.length-1||(wi+1<weeks.length&&weeks[wi+1][0].block!==block)){
+      h+='</div>';
+    }
+  });
+  document.getElementById('sidebar').innerHTML=h;
+}
+
+function renderContent(){
+  const wdays=weeks[curWeek];
+  const block=wdays[0].block;
+  const bdata=PLAN.blocks[block];
+  const wn=curWeek+1;
+  const note=state[nk(wn)]||'';
+  const todayIso=new Date().toISOString().slice(0,10);
+
+  const daysH=wdays.map(day=>{
+    const isDone=day.type!=='rest'&&state[dk(day.day)];
+    const isToday=day.date===todayIso;
+    const isRest=day.type==='rest';
+    return`<div class="day-card${isRest?' is-rest':''}${isDone?' is-done':''}${isToday?' is-today':''}">
+      <div class="dn">${DAYS_FULL[day.dow]}${isToday?'<span class="today-pip">avui</span>':''}</div>
+      <div class="dd">${fmtDate(day.date)}</div>
+      <div class="dt">${day.title}</div>
+      <div class="ds">${day.subtitle}</div>
+      <div class="ddetail">${detailHtml(day)}</div>
+      <span class="badge ${badgeClass(day)}">${badgeLabel(day)}</span>
+      ${!isRest?`<button class="done-btn${isDone?' marked':''}" onclick="tog(${day.day})">${isDone?'✓ Fet':'Marcar com a fet'}</button>`:''}
+    </div>`;
+  }).join('');
+
+  const discharge=wdays[0].discharge;
+  document.getElementById('content').innerHTML=`
+    <div class="week-head">
+      <div class="week-title">Setmana ${wn} <span style="color:var(--text3);font-weight:300;font-size:.86rem;">/ ${weeks.length}</span></div>
+      <div class="week-dates">${weekRange(wdays)}</div>
+      <div class="meta-row">
+        <div class="mpill">📅 Dies ${wdays[0].day}-${wdays[wdays.length-1].day}</div>
+        ${discharge?'<div class="mpill">🔄 Descàrrega</div>':''}
+      </div>
+    </div>
+    <div class="bloc-info">
+      <div class="bloc-dot" style="background:${bdata.color}"></div>
+      <div><div class="bloc-name">${bdata.name}</div><div class="bloc-desc">${bdata.desc}</div></div>
+    </div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--gym-bg)"></div>Gimnàs</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--trail-bg)"></div>Trail</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--bici-bg)"></div>Bici</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--rest-bg);border:1px solid var(--border)"></div>Descans</div>
+    </div>
+    <div class="days-grid">${daysH}</div>
+    <div class="notes-section">
+      <div class="notes-title">📝 Notes setmana ${wn}</div>
+      <textarea class="notes-ta" id="notes-area" placeholder="Sensacions, càrregues, km reals...">${note}</textarea>
+      <div class="notes-foot">
+        <button class="save-btn" onclick="sNote(${wn})">Guardar</button>
+        <span class="saved-msg" id="saved-msg">Guardat ✓</span>
+      </div>
+    </div>`;
+
+  const done=doneDays();
+  document.getElementById('prog-label').textContent=`${done} / 90 dies completats`;
+  document.getElementById('prog-bar').style.width=Math.round((done/90)*100)+'%';
+}
+
+function tog(dayNum){state[dk(dayNum)]=!state[dk(dayNum)];save();renderSidebar();renderContent();}
+function sNote(wn){state[nk(wn)]=document.getElementById('notes-area').value;save();const m=document.getElementById('saved-msg');m.classList.add('show');setTimeout(()=>m.classList.remove('show'),2000);}
+function sel(i){curWeek=i;renderSidebar();renderContent();}
+function goToday(){
+  const todayIso=new Date().toISOString().slice(0,10);
+  for(let i=0;i<weeks.length;i++){
+    if(weeks[i].some(d=>d.date===todayIso)){curWeek=i;renderSidebar();renderContent();return;}
+  }
+  // outside range
+  const startMs=new Date('2026-06-22').getTime();
+  curWeek=new Date().getTime()<startMs?0:weeks.length-1;
+  renderSidebar();renderContent();
+}
+
+load();
+goToday(); // start on today's week automatically
+</script>
+</body>
+</html>
