@@ -201,38 +201,84 @@ function parseCSV(text){
 }
 
 function normalizeActivity(row){
-  const get=(...keys)=>{for(const k of keys){const v=row[k]||row[k.toLowerCase()]||'';if(v&&v!=='--')return v;}return '';};
-  let dateRaw=get('date','activity date','start time','time');
+  const get=(...keys)=>{for(const k of keys){const v=row[k]||row[k.toLowerCase()]||'';if(v&&v!=='--'&&v!=='0.0'&&v!=='0')return v;}return '';};
+
+  // ── DATA ──────────────────────────────────────────────────────────────────
+  let dateRaw=get('Fecha de la actividad','date','activity date','start time','time');
   let date='';
-  const m=dateRaw.match(/(\d{4})-(\d{2})-(\d{2})/);
-  if(m) date=m[1]+'-'+m[2]+'-'+m[3];
-  else{const d=new Date(dateRaw);if(!isNaN(d))date=d.toISOString().split('T')[0];}
-  let km=parseFloat(get('distance','distance (km)','distance(km)'));
-  if(isNaN(km))km=null; else if(km>500)km=km/1000;
-  let dplus=parseInt(get('elevation gain','elevation gain (m)','elevationup','elevation_gain','total ascent'));
-  if(isNaN(dplus))dplus=null;
-  let fcAvg=parseInt(get('average heart rate','avg hr','avg. heart rate','average_heartrate'));
-  let fcMax=parseInt(get('max. heart rate','max heart rate','max_heartrate'));
-  if(isNaN(fcAvg))fcAvg=null; if(isNaN(fcMax))fcMax=null;
-  const paceRaw=get('avg pace','average pace','avg. pace','pace');
+  // Format Strava castellà: "27 jun 2026, 8:55:51"
+  const MESOS_ES={'ene':'Jan','feb':'Feb','mar':'Mar','abr':'Apr','may':'May','jun':'Jun','jul':'Jul','ago':'Aug','sep':'Sep','oct':'Oct','nov':'Nov','dic':'Dec'};
+  const mEs = dateRaw.match(/^(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
+  if(mEs){
+    const mesEn = MESOS_ES[mEs[2].toLowerCase()]||mEs[2];
+    try{ date = new Date(`${mEs[1]} ${mesEn} ${mEs[3]}`).toISOString().split('T')[0]; }catch(e){}
+  }
+  if(!date){
+    const mIso = dateRaw.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if(mIso) date=mIso[1]+'-'+mIso[2]+'-'+mIso[3];
+    else{ const d=new Date(dateRaw); if(!isNaN(d)) date=d.toISOString().split('T')[0]; }
+  }
+
+  // ── DISTÀNCIA ─────────────────────────────────────────────────────────────
+  let km=null;
+  const distRaw = get('Distancia','distance','distance (km)','distance(km)');
+  if(distRaw){
+    let v=parseFloat(distRaw);
+    if(!isNaN(v)&&v>0){
+      if(v>500) km=v/1000;      // Strava en metres
+      else if(v>0.1) km=v;      // ja en km
+    }
+  }
+  if(km) km=Math.round(km*100)/100;
+
+  // ── DESNIVELL ─────────────────────────────────────────────────────────────
+  let dplus=null;
+  const dpRaw=get('Desnivel positivo','elevation gain','elevation gain (m)','elevationup','total ascent');
+  if(dpRaw){ const v=parseFloat(dpRaw); if(!isNaN(v)&&v>0) dplus=Math.round(v); }
+
+  // ── FC ────────────────────────────────────────────────────────────────────
+  let fcAvg=null, fcMax=null;
+  const fcAvgRaw=get('Ritmo cardiaco promedio','average heart rate','avg hr','avg. heart rate');
+  const fcMaxRaw=get('Ritmo cardiaco máximo','max. heart rate','max heart rate');
+  if(fcAvgRaw){ const v=parseInt(fcAvgRaw); if(!isNaN(v)&&v>0) fcAvg=v; }
+  if(fcMaxRaw){ const v=parseInt(fcMaxRaw); if(!isNaN(v)&&v>0) fcMax=v; }
+
+  // ── RITME ─────────────────────────────────────────────────────────────────
+  let pace='';
+  const paceRaw=get('Ritmo ajustado en pendientes promedio','avg pace','average pace','avg. pace','pace');
   const pm=paceRaw.match(/(\d+):(\d+)/);
-  const pace=pm?pm[1]+':'+pm[2]:'';
-  // Temps en minuts
-  let tempsRaw=get('time','elapsed time','moving time','duration');
+  if(pm) pace=pm[1]+':'+pm[2];
+  // Si no té ritme però té distància i temps, calcular-lo
+  if(!pace && km && km>0){
+    const tempsRaw2=get('Tiempo en movimiento','Tiempo transcurrido','time','elapsed time','moving time');
+    if(tempsRaw2){
+      const tv=parseFloat(tempsRaw2);
+      if(!isNaN(tv)&&tv>0){
+        const minPerKm = (tv/60)/km;
+        pace=Math.floor(minPerKm)+':'+String(Math.round((minPerKm%1)*60)).padStart(2,'0');
+      }
+    }
+  }
+
+  // ── TEMPS ─────────────────────────────────────────────────────────────────
   let temps=null;
-  const tm=tempsRaw.match(/(\d+):(\d+):(\d+)/);
-  if(tm) temps=parseInt(tm[1])*60+parseInt(tm[2]);
-  else{ const tv=parseFloat(tempsRaw); if(!isNaN(tv)&&tv>0) temps=Math.round(tv/60); }
-  // Nom de l'activitat
-  const nom=get('activity name','name','title')||'';
-  // Sport
-  const typeRaw=get('activity type','type','sport').toLowerCase();
+  const tempsRaw=get('Tiempo en movimiento','Tiempo transcurrido','time','elapsed time','moving time','duration');
+  if(tempsRaw){ const tv=parseFloat(tempsRaw); if(!isNaN(tv)&&tv>0) temps=Math.round(tv/60); }
+
+  // ── NOM ───────────────────────────────────────────────────────────────────
+  const nom=get('Nombre de la actividad','activity name','name','title')||'';
+
+  // ── SPORT ─────────────────────────────────────────────────────────────────
+  const typeRaw=(get('Tipo de actividad','Tipo','activity type','type','sport')||'').toLowerCase();
   let sport='trail';
-  if(typeRaw.includes('cycl')||typeRaw.includes('ride')||typeRaw.includes('bici')) sport='bici';
-  else if(typeRaw.includes('strength')||typeRaw.includes('weight')||typeRaw.includes('gym')||typeRaw.includes('força')) sport='forca';
-  else if(typeRaw.includes('soccer')||typeRaw.includes('football')||typeRaw.includes('futbol')) sport='futbol';
-  else if(typeRaw.includes('swim')) sport='natacio';
-  else if(typeRaw.includes('walk')||typeRaw.includes('hik')) sport='senderisme';
+  if(typeRaw.includes('biciclet')||typeRaw.includes('cycl')||typeRaw.includes('ride')||typeRaw.includes('virtual')) sport='bici';
+  else if(typeRaw.includes('pesas')||typeRaw.includes('strength')||typeRaw.includes('weight')||typeRaw.includes('gym')||typeRaw.includes('entrenamiento con')) sport='forca';
+  else if(typeRaw.includes('entrenamiento')||typeRaw.includes('crossfit')||typeRaw.includes('yoga')||typeRaw.includes('pilates')) sport='forca';
+  else if(typeRaw.includes('fútbol')||typeRaw.includes('futbol')||typeRaw.includes('soccer')||typeRaw.includes('football')) sport='futbol';
+  else if(typeRaw.includes('swim')||typeRaw.includes('nataci')) sport='natacio';
+  else if(typeRaw.includes('caminat')||typeRaw.includes('walk')||typeRaw.includes('senderis')||typeRaw.includes('hik')) sport='senderisme';
+  else if(typeRaw.includes('carrera')||typeRaw.includes('run')||typeRaw.includes('trail')) sport='trail';
+
   return{date,km,dplus,fcAvg,fcMax,pace,temps,nom,sport};
 }
 
@@ -1637,7 +1683,7 @@ function renderActivitats(){
   const today = todayISO();
 
   // Estadístiques acumulades
-  const planStart = '2026-06-29';
+  const planStart = '2026-06-25'; // Una mica abans de l'inici per capturar activitats pre-pla properes
   const actsFromPlan = acts.filter(a=>a.date>=planStart);
   const totalKm   = actsFromPlan.reduce((s,a)=>s+(a.km||0),0);
   const totalDp   = actsFromPlan.reduce((s,a)=>s+(a.dplus||0),0);
