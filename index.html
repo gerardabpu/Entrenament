@@ -126,6 +126,25 @@ button{font-family:'Fira Sans',system-ui,sans-serif;cursor:pointer;}
 .section-card{border-radius:10px;border:1px solid #E5E1DC;background:#FFFFFF;padding:16px;margin-bottom:12px;}
 .section-title{font-size:12px;font-weight:500;margin-bottom:14px;}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+.meal-card{border-radius:10px;border:1px solid #E5E1DC;background:#FFFFFF;overflow:hidden;margin-bottom:8px;}
+.meal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;}
+.meal-title{font-size:13px;font-weight:500;color:#1C1917;}
+.meal-macros{display:flex;gap:8px;flex-wrap:wrap;}
+.macro-badge{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;}
+.meal-body{padding:0 14px 14px;border-top:1px solid #E5E1DC;}
+.ingredients-list{margin:10px 0 8px;padding-left:16px;}
+.ingredients-list li{font-size:12px;font-weight:300;color:#78716C;line-height:1.8;}
+.prep-list{margin:0;padding-left:16px;}
+.prep-list li{font-size:12px;font-weight:300;color:#1C1917;line-height:1.8;}
+.macro-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.macro-bar-label{font-size:11px;font-weight:300;color:#78716C;min-width:70px;}
+.macro-bar-bg{flex:1;height:4px;background:#E5E1DC;border-radius:2px;}
+.macro-bar-fill{height:100%;border-radius:2px;transition:width 0.4s;}
+.macro-bar-val{font-size:11px;font-weight:500;color:#1C1917;min-width:40px;text-align:right;}
+.day-type-btn{padding:8px 14px;border-radius:8px;border:1px solid #E5E1DC;background:transparent;font-family:'Fira Sans',system-ui;font-size:12px;font-weight:400;color:#78716C;cursor:pointer;transition:all 0.15s;}
+.day-type-btn.active{font-weight:500;color:#fff;}
+
 </style>
 </head>
 <body>
@@ -148,11 +167,13 @@ button{font-family:'Fira Sans',system-ui,sans-serif;cursor:pointer;}
     <button class="nav-tab active" onclick="switchTab('avui',this)">Avui</button>
     <button class="nav-tab" onclick="switchTab('cardio',this)">Cardio</button>
     <button class="nav-tab" onclick="switchTab('forca',this)">Força</button>
+    <button class="nav-tab" onclick="switchTab('aliment',this)">Alimentació</button>
   </div>
 </div>
 <div id="tab-avui" class="tab active"></div>
 <div id="tab-cardio" class="tab"></div>
 <div id="tab-forca" class="tab"></div>
+<div id="tab-aliment" class="tab"></div>
 
 <script>
 const PLA_CARDIO=[{"week":1,"phase":1,"phase_name":"Base aeròbica","is_recovery":false,"start_date":"2026-06-29","sessions":{"tue":{"date":"2026-06-30","type":"caminar_trotar","sport":"trail","zone":"Z2","km":3.5,"dplus":0,"desc":"Caminar-trotar alternant. 3.5km. FC còmoda."},"fri":{"date":"2026-07-03","type":"bici_z2","sport":"bici","zone":"Z2","km":25,"dplus":0,"desc":"Rodet Z2. 45-60 min. Cadència 85-90 rpm. Recuperació activa."},"sat":{"type":"muntanya","sport":"trail","zone":"Z2","km":6,"dplus":150,"desc":"Sortida muntanya caminant. 6km / D+150m. Pujades sempre caminant.","date":"2026-07-04"}}},{"week":2,"phase":1,"phase_name":"Base aeròbica","is_recovery":false,"start_date":"2026-07-06","sessions":{"tue":{"date":"2026-07-07","type":"caminar_trotar","sport":"trail","zone":"Z2","km":4.0,"dplus":0,"desc":"Caminar-trotar alternant. 4.0km. FC còmoda."},"fri":{"date":"2026-07-10","type":"bici_z2","sport":"bici","zone":"Z2","km":25,"dplus":0,"desc":"Rodet Z2. 45-60 min. Cadència 85-90 rpm. Recuperació activa."},"sat":{"type":"muntanya","sport":"trail","zone":"Z2","km":7,"dplus":200,"desc":"Sortida muntanya caminant. 7km / D+200m. Pujades sempre caminant.","date":"2026-07-11"}}},{"week":3,"phase":1,"phase_name":"Base aeròbica","is_recovery":false,"start_date":"2026-07-13","sessions":{"tue":{"date":"2026-07-14","type":"caminar_trotar","sport":"trail","zone":"Z2","km":4.5,"dplus":0,"desc":"Caminar-trotar alternant. 4.5km. FC còmoda."},"fri":{"date":"2026-07-17","type":"bici_z2","sport":"bici","zone":"Z2","km":25,"dplus":0,"desc":"Rodet Z2. 45-60 min. Cadència 85-90 rpm. Recuperació activa."},"sat":{"type":"muntanya","sport":"trail","zone":"Z2","km":8,"dplus":250,"desc":"Sortida muntanya caminant. 8km / D+250m. Pujades sempre caminant.","date":"2026-07-18"}}},{"week":4,"phase":1,"phase_name":"Base aeròbica","is_recovery":true,"start_date":"2026-07-20","sessions":{"tue":{"date":"2026-07-21","type":"caminar_trotar","sport":"trail","zone":"Z2","km":5.0,"dplus":0,"desc":"Caminar-trotar alternant. 5.0km. FC còmoda."},"fri":{"date":"2026-07-24","type":"bici_z2","sport":"bici","zone":"Z2","km":25,"dplus":0,"desc":"Rodet Z2. 45-60 min. Cadència 85-90 rpm. Recuperació activa."},"sat":{"type":"muntanya","sport":"trail","zone":"Z2","km":9,"dplus":300,"desc":"Sortida muntanya caminant. 9km / D+300m. Pujades sempre caminant.","date":"2026-07-25"}}},{"week":5,"phase":1,"phase_name":"Base aeròbica","is_recovery":false,"start_date":"2026-07-27","sessions":{"tue":{"date":"2026-07-28","type":"pujades","sport":"trail","zone":"Z2-Z3","km":5.4,"dplus":48,"desc":"15 min escalfament + 3x pujada 2 min (Z3) baixant caminant + 10 min tornada."},"fri":{"date":"2026-07-31","type":"bici_z2","sport":"bici","zone":"Z2","km":32.0,"dplus":0,"desc":"Rodet Z2. 32.0km (~60 min). Cadència 85-90 rpm."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":8.7,"dplus":195,"desc":"Sortida llarga trail. 8.7km / D+195m. Caminant pujades, trote pla.","date":"2026-08-01"}}},{"week":6,"phase":1,"phase_name":"Base aeròbica","is_recovery":false,"start_date":"2026-08-03","sessions":{"tue":{"date":"2026-08-04","type":"pujades","sport":"trail","zone":"Z2-Z3","km":5.8,"dplus":60,"desc":"15 min escalfament + 4x pujada 2 min (Z3) baixant caminant + 10 min tornada."},"fri":{"date":"2026-08-07","type":"bici_z2","sport":"bici","zone":"Z2","km":34.0,"dplus":0,"desc":"Rodet Z2. 34.0km (~60 min). Cadència 85-90 rpm."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":9.4,"dplus":240,"desc":"Sortida llarga trail. 9.4km / D+240m. Caminant pujades, trote pla.","date":"2026-08-08"}}},{"week":7,"phase":1,"phase_name":"Base aeròbica","is_recovery":false,"start_date":"2026-08-10","sessions":{"tue":{"date":"2026-08-11","type":"pujades","sport":"trail","zone":"Z2-Z3","km":6.2,"dplus":71,"desc":"15 min escalfament + 4x pujada 2 min (Z3) baixant caminant + 10 min tornada."},"fri":{"date":"2026-08-14","type":"bici_z2","sport":"bici","zone":"Z2","km":36.0,"dplus":0,"desc":"Rodet Z2. 36.0km (~60 min). Cadència 85-90 rpm."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":10.1,"dplus":285,"desc":"Sortida llarga trail. 10.1km / D+285m. Caminant pujades, trote pla.","date":"2026-08-15"}}},{"week":8,"phase":1,"phase_name":"Base aeròbica","is_recovery":true,"start_date":"2026-08-17","sessions":{"tue":{"date":"2026-08-18","type":"pujades","sport":"trail","zone":"Z2-Z3","km":4.6,"dplus":49,"desc":"15 min escalfament + 4x pujada 2 min (Z3) baixant caminant + 10 min tornada. Setmana de recuperació."},"fri":{"date":"2026-08-21","type":"bici_z2","sport":"bici","zone":"Z2","km":26.6,"dplus":0,"desc":"Rodet Z2. 26.6km (~60 min). Cadència 85-90 rpm. Setmana de recuperació."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":7.6,"dplus":198,"desc":"Sortida llarga trail. 7.6km / D+198m. Caminant pujades, trote pla. Setmana de recuperació.","date":"2026-08-22"}}},{"week":9,"phase":1,"phase_name":"Base aeròbica","is_recovery":false,"start_date":"2026-08-24","sessions":{"tue":{"date":"2026-08-25","type":"pujades","sport":"trail","zone":"Z2-Z3","km":7.0,"dplus":93,"desc":"15 min escalfament + 5x pujada 2 min (Z3) baixant caminant + 10 min tornada."},"fri":{"date":"2026-08-28","type":"bici_z2","sport":"bici","zone":"Z2","km":40.0,"dplus":0,"desc":"Rodet Z2. 40.0km (~60 min). Cadència 85-90 rpm."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":11.5,"dplus":375,"desc":"Sortida llarga trail. 11.5km / D+375m. Caminant pujades, trote pla.","date":"2026-08-29"}}},{"week":10,"phase":1,"phase_name":"Base aeròbica","is_recovery":false,"start_date":"2026-08-31","sessions":{"tue":{"date":"2026-09-01","type":"pujades","sport":"trail","zone":"Z2-Z3","km":7.4,"dplus":105,"desc":"15 min escalfament + 6x pujada 2 min (Z3) baixant caminant + 10 min tornada."},"fri":{"date":"2026-09-04","type":"bici_z2","sport":"bici","zone":"Z2","km":42.0,"dplus":0,"desc":"Rodet Z2. 42.0km (~60 min). Cadència 85-90 rpm."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":12.2,"dplus":420,"desc":"Sortida llarga trail. 12.2km / D+420m. Caminant pujades, trote pla.","date":"2026-09-05"}}},{"week":11,"phase":1,"phase_name":"Base aeròbica","is_recovery":false,"start_date":"2026-09-07","sessions":{"tue":{"date":"2026-09-08","type":"pujades","sport":"trail","zone":"Z2-Z3","km":7.8,"dplus":116,"desc":"15 min escalfament + 6x pujada 2 min (Z3) baixant caminant + 10 min tornada."},"fri":{"date":"2026-09-11","type":"bici_z2","sport":"bici","zone":"Z2","km":44.0,"dplus":0,"desc":"Rodet Z2. 44.0km (~60 min). Cadència 85-90 rpm."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":12.9,"dplus":465,"desc":"Sortida llarga trail. 12.9km / D+465m. Caminant pujades, trote pla.","date":"2026-09-12"}}},{"week":12,"phase":1,"phase_name":"Base aeròbica","is_recovery":true,"start_date":"2026-09-14","sessions":{"tue":{"date":"2026-09-15","type":"pujades","sport":"trail","zone":"Z2-Z3","km":5.7,"dplus":76,"desc":"15 min escalfament + 6x pujada 2 min (Z3) baixant caminant + 10 min tornada. Setmana de recuperació."},"fri":{"date":"2026-09-18","type":"bici_z2","sport":"bici","zone":"Z2","km":32.2,"dplus":0,"desc":"Rodet Z2. 32.2km (~60 min). Cadència 85-90 rpm. Setmana de recuperació."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":9.5,"dplus":306,"desc":"Sortida llarga trail. 9.5km / D+306m. Caminant pujades, trote pla. Setmana de recuperació.","date":"2026-09-19"}}},{"week":13,"phase":1,"phase_name":"Base aeròbica","is_recovery":false,"start_date":"2026-09-21","sessions":{"tue":{"date":"2026-09-22","type":"pujades","sport":"trail","zone":"Z2-Z3","km":8.6,"dplus":138,"desc":"15 min escalfament + 7x pujada 2 min (Z3) baixant caminant + 10 min tornada."},"fri":{"date":"2026-09-25","type":"bici_z2","sport":"bici","zone":"Z2","km":48.0,"dplus":0,"desc":"Rodet Z2. 48.0km (~60 min). Cadència 85-90 rpm."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":14.3,"dplus":555,"desc":"Sortida llarga trail. 14.3km / D+555m. Caminant pujades, trote pla.","date":"2026-09-26"}}},{"week":14,"phase":2,"phase_name":"Construcció desnivell","is_recovery":false,"start_date":"2026-09-28","sessions":{"tue":{"date":"2026-09-29","type":"intervals","sport":"trail","zone":"Z3-Z4","km":8.2,"dplus":141,"desc":"Escalfament 15 min + 4x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada."},"fri":{"date":"2026-10-02","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":36.5,"dplus":0,"desc":"Rodet: 10 min Z2 + 2x10 min Z3 (pujada resistència) + 10 min Z2. Total ~36.5km."},"sat":{"type":"bici_llarga","sport":"bici","zone":"Z2","km":63.0,"dplus":425,"desc":"Sortida bici exterior (o rodet llarg). 63.0km Z2 constant. Hidratació cada 20 min.","date":"2026-10-03"}}},{"week":15,"phase":2,"phase_name":"Construcció desnivell","is_recovery":false,"start_date":"2026-10-05","sessions":{"tue":{"date":"2026-10-06","type":"intervals","sport":"trail","zone":"Z3-Z4","km":8.5,"dplus":161,"desc":"Escalfament 15 min + 4x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada."},"fri":{"date":"2026-10-09","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":38.0,"dplus":0,"desc":"Rodet: 10 min Z2 + 2x10 min Z3 (pujada resistència) + 10 min Z2. Total ~38.0km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":14.2,"dplus":460,"desc":"Sortida llarga trail. 14.2km / D+460m. Nutrició i hidratació de cursa.","date":"2026-10-10"}}},{"week":16,"phase":2,"phase_name":"Construcció desnivell","is_recovery":true,"start_date":"2026-10-12","sessions":{"tue":{"date":"2026-10-13","type":"intervals","sport":"trail","zone":"Z3-Z4","km":6.1,"dplus":117,"desc":"Escalfament 15 min + 4x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada. Setmana de recuperació."},"fri":{"date":"2026-10-16","type":"bici_z2","sport":"bici","zone":"Z2","km":21.0,"dplus":0,"desc":"Rodet Z2 suau. 21.0km. Recuperació."},"sat":{"type":"bici_llarga","sport":"bici","zone":"Z2","km":48.3,"dplus":332,"desc":"Sortida bici exterior (o rodet llarg). 48.3km Z2 constant. Hidratació cada 20 min. Setmana de recuperació.","date":"2026-10-17"}}},{"week":17,"phase":2,"phase_name":"Construcció desnivell","is_recovery":false,"start_date":"2026-10-19","sessions":{"tue":{"date":"2026-10-20","type":"intervals","sport":"trail","zone":"Z3-Z4","km":9.0,"dplus":199,"desc":"Escalfament 15 min + 5x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada."},"fri":{"date":"2026-10-23","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":41.0,"dplus":0,"desc":"Rodet: 10 min Z2 + 2x10 min Z3 (pujada resistència) + 10 min Z2. Total ~41.0km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":15.4,"dplus":570,"desc":"Sortida llarga trail. 15.4km / D+570m. Nutrició i hidratació de cursa.","date":"2026-10-24"}}},{"week":18,"phase":2,"phase_name":"Construcció desnivell","is_recovery":false,"start_date":"2026-10-26","sessions":{"tue":{"date":"2026-10-27","type":"intervals","sport":"trail","zone":"Z3-Z4","km":9.2,"dplus":218,"desc":"Escalfament 15 min + 5x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada."},"fri":{"date":"2026-10-30","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":42.5,"dplus":0,"desc":"Rodet: 10 min Z2 + 2x10 min Z3 (pujada resistència) + 10 min Z2. Total ~42.5km."},"sat":{"type":"bici_llarga","sport":"bici","zone":"Z2","km":75.0,"dplus":525,"desc":"Sortida bici exterior (o rodet llarg). 75.0km Z2 constant. Hidratació cada 20 min.","date":"2026-10-31"}}},{"week":19,"phase":2,"phase_name":"Construcció desnivell","is_recovery":false,"start_date":"2026-11-02","sessions":{"tue":{"date":"2026-11-03","type":"intervals","sport":"trail","zone":"Z3-Z4","km":9.5,"dplus":237,"desc":"Escalfament 15 min + 6x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada."},"fri":{"date":"2026-11-06","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":44.0,"dplus":0,"desc":"Rodet: 10 min Z2 + 2x10 min Z3 (pujada resistència) + 10 min Z2. Total ~44.0km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":16.6,"dplus":680,"desc":"Sortida llarga trail. 16.6km / D+680m. Nutrició i hidratació de cursa.","date":"2026-11-07"}}},{"week":20,"phase":2,"phase_name":"Construcció desnivell","is_recovery":true,"start_date":"2026-11-09","sessions":{"tue":{"date":"2026-11-10","type":"intervals","sport":"trail","zone":"Z3-Z4","km":6.8,"dplus":167,"desc":"Escalfament 15 min + 5x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada. Setmana de recuperació."},"fri":{"date":"2026-11-13","type":"bici_z2","sport":"bici","zone":"Z2","km":21.0,"dplus":0,"desc":"Rodet Z2 suau. 21.0km. Recuperació."},"sat":{"type":"bici_llarga","sport":"bici","zone":"Z2","km":56.7,"dplus":402,"desc":"Sortida bici exterior (o rodet llarg). 56.7km Z2 constant. Hidratació cada 20 min. Setmana de recuperació.","date":"2026-11-14"}}},{"week":21,"phase":2,"phase_name":"Construcció desnivell","is_recovery":false,"start_date":"2026-11-16","sessions":{"tue":{"date":"2026-11-17","type":"intervals","sport":"trail","zone":"Z3-Z4","km":10.0,"dplus":276,"desc":"Escalfament 15 min + 6x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada."},"fri":{"date":"2026-11-20","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":47.0,"dplus":0,"desc":"Rodet: 10 min Z2 + 2x10 min Z3 (pujada resistència) + 10 min Z2. Total ~47.0km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":17.8,"dplus":790,"desc":"Sortida llarga trail. 17.8km / D+790m. Nutrició i hidratació de cursa.","date":"2026-11-21"}}},{"week":22,"phase":2,"phase_name":"Construcció desnivell","is_recovery":false,"start_date":"2026-11-23","sessions":{"tue":{"date":"2026-11-24","type":"intervals","sport":"trail","zone":"Z3-Z4","km":10.2,"dplus":295,"desc":"Escalfament 15 min + 7x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada."},"fri":{"date":"2026-11-27","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":48.5,"dplus":0,"desc":"Rodet: 10 min Z2 + 2x10 min Z3 (pujada resistència) + 10 min Z2. Total ~48.5km."},"sat":{"type":"bici_llarga","sport":"bici","zone":"Z2","km":87.0,"dplus":625,"desc":"Sortida bici exterior (o rodet llarg). 87.0km Z2 constant. Hidratació cada 20 min.","date":"2026-11-28"}}},{"week":23,"phase":2,"phase_name":"Construcció desnivell","is_recovery":false,"start_date":"2026-11-30","sessions":{"tue":{"date":"2026-12-01","type":"intervals","sport":"trail","zone":"Z3-Z4","km":10.5,"dplus":315,"desc":"Escalfament 15 min + 7x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada."},"fri":{"date":"2026-12-04","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":50.0,"dplus":0,"desc":"Rodet: 10 min Z2 + 2x10 min Z3 (pujada resistència) + 10 min Z2. Total ~50.0km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":19.0,"dplus":900,"desc":"Sortida llarga trail. 19.0km / D+900m. Nutrició i hidratació de cursa.","date":"2026-12-05"}}},{"week":24,"phase":2,"phase_name":"Construcció desnivell","is_recovery":true,"start_date":"2026-12-07","sessions":{"tue":{"date":"2026-12-08","type":"intervals","sport":"trail","zone":"Z3-Z4","km":7.5,"dplus":217,"desc":"Escalfament 15 min + 6x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada. Setmana de recuperació."},"fri":{"date":"2026-12-11","type":"bici_z2","sport":"bici","zone":"Z2","km":21.0,"dplus":0,"desc":"Rodet Z2 suau. 21.0km. Recuperació."},"sat":{"type":"bici_llarga","sport":"bici","zone":"Z2","km":65.1,"dplus":472,"desc":"Sortida bici exterior (o rodet llarg). 65.1km Z2 constant. Hidratació cada 20 min. Setmana de recuperació.","date":"2026-12-12"}}},{"week":25,"phase":2,"phase_name":"Construcció desnivell","is_recovery":false,"start_date":"2026-12-14","sessions":{"tue":{"date":"2026-12-15","type":"intervals","sport":"trail","zone":"Z3-Z4","km":11.0,"dplus":353,"desc":"Escalfament 15 min + 8x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada."},"fri":{"date":"2026-12-18","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":53.0,"dplus":0,"desc":"Rodet: 10 min Z2 + 2x10 min Z3 (pujada resistència) + 10 min Z2. Total ~53.0km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2","km":20.2,"dplus":1010,"desc":"Sortida llarga trail. 20.2km / D+1010m. Nutrició i hidratació de cursa.","date":"2026-12-19"}}},{"week":26,"phase":2,"phase_name":"Construcció desnivell","is_recovery":false,"start_date":"2026-12-21","sessions":{"tue":{"date":"2026-12-22","type":"intervals","sport":"trail","zone":"Z3-Z4","km":11.2,"dplus":372,"desc":"Escalfament 15 min + 8x 3-4 min pujada forta (Z4) baixant recuperació + 10 min tornada."},"fri":{"date":"2026-12-25","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":54.5,"dplus":0,"desc":"Rodet: 10 min Z2 + 2x10 min Z3 (pujada resistència) + 10 min Z2. Total ~54.5km."},"sat":{"type":"bici_llarga","sport":"bici","zone":"Z2","km":99.0,"dplus":725,"desc":"Sortida bici exterior (o rodet llarg). 99.0km Z2 constant. Hidratació cada 20 min.","date":"2026-12-26"}}},{"week":27,"phase":3,"phase_name":"Especificitat","is_recovery":false,"start_date":"2026-12-28","sessions":{"tue":{"date":"2026-12-29","type":"ritme","sport":"trail","zone":"Z2-Z3","km":10.2,"dplus":0,"desc":"10 min escalfament + 23 min ritme de cursa (Z3) + 10 min tornada. Total 10.2km."},"fri":{"date":"2027-01-01","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":41,"dplus":0,"desc":"Rodet: 10 min Z2 + 3x8 min Z3 resistència + 10 min Z2. Total ~41km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2-Z3","km":17.4,"dplus":710,"desc":"Sortida llarga trail específica. 17.4km / D+710m. Equipament i nutrició de cursa.","date":"2027-01-02"}}},{"week":28,"phase":3,"phase_name":"Especificitat","is_recovery":true,"start_date":"2027-01-04","sessions":{"tue":{"date":"2027-01-05","type":"ritme","sport":"trail","zone":"Z2-Z3","km":7.2,"dplus":0,"desc":"10 min escalfament + 15 min ritme de cursa (Z3) + 10 min tornada. Total 7.2km. Setmana de recuperació."},"fri":{"date":"2027-01-08","type":"bici_z2","sport":"bici","zone":"Z2","km":21.0,"dplus":0,"desc":"Rodet Z2 suau. 21.0km. Recuperació."},"sat":{"type":"bici_llarga","sport":"bici","zone":"Z2","km":49.0,"dplus":300,"desc":"Setmana recuperació: bici exterior suau. 49.0km Z2.","date":"2027-01-09"}}},{"week":29,"phase":3,"phase_name":"Especificitat","is_recovery":false,"start_date":"2027-01-11","sessions":{"tue":{"date":"2027-01-12","type":"ritme","sport":"trail","zone":"Z2-Z3","km":10.4,"dplus":0,"desc":"10 min escalfament + 29 min ritme de cursa (Z3) + 10 min tornada. Total 10.4km."},"fri":{"date":"2027-01-15","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":43,"dplus":0,"desc":"Rodet: 10 min Z2 + 3x8 min Z3 resistència + 10 min Z2. Total ~43km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2-Z3","km":18.4,"dplus":830,"desc":"Sortida llarga trail específica. 18.4km / D+830m. Equipament i nutrició de cursa.","date":"2027-01-16"}}},{"week":30,"phase":3,"phase_name":"Especificitat","is_recovery":false,"start_date":"2027-01-18","sessions":{"tue":{"date":"2027-01-19","type":"ritme","sport":"trail","zone":"Z2-Z3","km":10.6,"dplus":0,"desc":"10 min escalfament + 32 min ritme de cursa (Z3) + 10 min tornada. Total 10.6km."},"fri":{"date":"2027-01-22","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":44,"dplus":0,"desc":"Rodet: 10 min Z2 + 3x8 min Z3 resistència + 10 min Z2. Total ~44km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2-Z3","km":18.8,"dplus":890,"desc":"Sortida llarga trail específica. 18.8km / D+890m. Equipament i nutrició de cursa.","date":"2027-01-23"}}},{"week":31,"phase":3,"phase_name":"Especificitat","is_recovery":false,"start_date":"2027-01-25","sessions":{"tue":{"date":"2027-01-26","type":"ritme","sport":"trail","zone":"Z2-Z3","km":10.8,"dplus":0,"desc":"10 min escalfament + 35 min ritme de cursa (Z3) + 10 min tornada. Total 10.8km."},"fri":{"date":"2027-01-29","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":45,"dplus":0,"desc":"Rodet: 10 min Z2 + 3x8 min Z3 resistència + 10 min Z2. Total ~45km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2-Z3","km":19.2,"dplus":950,"desc":"Sortida llarga trail específica. 19.2km / D+950m. Equipament i nutrició de cursa.","date":"2027-01-30"}}},{"week":32,"phase":3,"phase_name":"Especificitat","is_recovery":true,"start_date":"2027-02-01","sessions":{"tue":{"date":"2027-02-02","type":"ritme","sport":"trail","zone":"Z2-Z3","km":7.6,"dplus":0,"desc":"10 min escalfament + 15 min ritme de cursa (Z3) + 10 min tornada. Total 7.6km. Setmana de recuperació."},"fri":{"date":"2027-02-05","type":"bici_z2","sport":"bici","zone":"Z2","km":21.0,"dplus":0,"desc":"Rodet Z2 suau. 21.0km. Recuperació."},"sat":{"type":"bici_llarga","sport":"bici","zone":"Z2","km":49.0,"dplus":300,"desc":"Setmana recuperació: bici exterior suau. 49.0km Z2.","date":"2027-02-06"}}},{"week":33,"phase":3,"phase_name":"Especificitat","is_recovery":false,"start_date":"2027-02-08","sessions":{"tue":{"date":"2027-02-09","type":"ritme","sport":"trail","zone":"Z2-Z3","km":11.1,"dplus":0,"desc":"10 min escalfament + 41 min ritme de cursa (Z3) + 10 min tornada. Total 11.1km."},"fri":{"date":"2027-02-12","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":47,"dplus":0,"desc":"Rodet: 10 min Z2 + 3x8 min Z3 resistència + 10 min Z2. Total ~47km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2-Z3","km":20.1,"dplus":1000,"desc":"Sortida llarga trail específica. 20.1km / D+1000m. Equipament i nutrició de cursa.","date":"2027-02-13"}}},{"week":34,"phase":3,"phase_name":"Especificitat","is_recovery":false,"start_date":"2027-02-15","sessions":{"tue":{"date":"2027-02-16","type":"ritme","sport":"trail","zone":"Z2-Z3","km":11.2,"dplus":0,"desc":"10 min escalfament + 44 min ritme de cursa (Z3) + 10 min tornada. Total 11.2km."},"fri":{"date":"2027-02-19","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":48,"dplus":0,"desc":"Rodet: 10 min Z2 + 3x8 min Z3 resistència + 10 min Z2. Total ~48km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2-Z3","km":20.6,"dplus":1000,"desc":"Sortida llarga trail específica. 20.6km / D+1000m. Equipament i nutrició de cursa.","date":"2027-02-20"}}},{"week":35,"phase":3,"phase_name":"Especificitat","is_recovery":false,"start_date":"2027-02-22","sessions":{"tue":{"date":"2027-02-23","type":"ritme","sport":"trail","zone":"Z2-Z3","km":11.3,"dplus":0,"desc":"10 min escalfament + 47 min ritme de cursa (Z3) + 10 min tornada. Total 11.3km."},"fri":{"date":"2027-02-26","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":49,"dplus":0,"desc":"Rodet: 10 min Z2 + 3x8 min Z3 resistència + 10 min Z2. Total ~49km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2-Z3","km":21.1,"dplus":1000,"desc":"Sortida llarga trail específica. 21.1km / D+1000m. Equipament i nutrició de cursa.","date":"2027-02-27"}}},{"week":36,"phase":3,"phase_name":"Especificitat","is_recovery":true,"start_date":"2027-03-01","sessions":{"tue":{"date":"2027-03-02","type":"ritme","sport":"trail","zone":"Z2-Z3","km":8.0,"dplus":0,"desc":"10 min escalfament + 15 min ritme de cursa (Z3) + 10 min tornada. Total 8.0km. Setmana de recuperació."},"fri":{"date":"2027-03-05","type":"bici_z2","sport":"bici","zone":"Z2","km":21.0,"dplus":0,"desc":"Rodet Z2 suau. 21.0km. Recuperació."},"sat":{"type":"bici_llarga","sport":"bici","zone":"Z2","km":49.0,"dplus":300,"desc":"Setmana recuperació: bici exterior suau. 49.0km Z2.","date":"2027-03-06"}}},{"week":37,"phase":3,"phase_name":"Especificitat","is_recovery":false,"start_date":"2027-03-08","sessions":{"tue":{"date":"2027-03-09","type":"ritme","sport":"trail","zone":"Z2-Z3","km":11.7,"dplus":0,"desc":"10 min escalfament + 53 min ritme de cursa (Z3) + 10 min tornada. Total 11.7km."},"fri":{"date":"2027-03-12","type":"bici_z2z3","sport":"bici","zone":"Z2-Z3","km":51,"dplus":0,"desc":"Rodet: 10 min Z2 + 3x8 min Z3 resistència + 10 min Z2. Total ~51km."},"sat":{"type":"sortida_llarga","sport":"trail","zone":"Z2-Z3","km":21.9,"dplus":1000,"desc":"Sortida llarga trail específica. 21.9km / D+1000m. Equipament i nutrició de cursa.","date":"2027-03-13"}}},{"week":38,"phase":4,"phase_name":"Tapering","is_recovery":false,"start_date":"2027-03-15","sessions":{"tue":{"date":"2027-03-16","type":"rodatge","sport":"trail","zone":"Z2","km":8.0,"dplus":0,"desc":"Rodatge lleuger Z2. 8.0km. Ha de semblar fàcil."},"fri":{"date":"2027-03-19","type":"bici_z2","sport":"bici","zone":"Z2","km":25.0,"dplus":0,"desc":"Rodet Z2 suau. 25.0km. Cames actives."},"sat":{"type":"sortida_suau","sport":"trail","zone":"Z2","km":14.0,"dplus":500,"desc":"Sortida suau trail. 14.0km / D+500m. Gaudir. Res de forçar.","date":"2027-03-20"}}},{"week":39,"phase":4,"phase_name":"Tapering","is_recovery":false,"start_date":"2027-03-22","sessions":{"tue":{"date":"2027-03-23","type":"rodatge","sport":"trail","zone":"Z2","km":6.6,"dplus":0,"desc":"Rodatge lleuger Z2. 6.6km. Ha de semblar fàcil."},"fri":{"date":"2027-03-26","type":"bici_z2","sport":"bici","zone":"Z2","km":20.0,"dplus":0,"desc":"Rodet Z2 suau. 20.0km. Cames actives."},"sat":{"type":"sortida_suau","sport":"trail","zone":"Z2","km":11.5,"dplus":410,"desc":"Sortida suau trail. 11.5km / D+410m. Gaudir. Res de forçar.","date":"2027-03-27"}}},{"week":40,"phase":4,"phase_name":"Tapering","is_recovery":true,"start_date":"2027-03-29","sessions":{"tue":{"date":"2027-03-30","type":"rodatge","sport":"trail","zone":"Z2","km":5.1,"dplus":0,"desc":"Rodatge lleuger Z2. 5.1km. Ha de semblar fàcil."},"fri":{"date":"2027-04-02","type":"bici_z2","sport":"bici","zone":"Z2","km":15.0,"dplus":0,"desc":"Rodet Z2 suau. 15.0km. Cames actives."},"sat":{"type":"sortida_suau","sport":"trail","zone":"Z2","km":9.0,"dplus":320,"desc":"Sortida suau trail. 9.0km / D+320m. Gaudir. Res de forçar.","date":"2027-04-03"}}},{"week":41,"phase":4,"phase_name":"Tapering","is_recovery":false,"start_date":"2027-04-05","sessions":{"tue":{"date":"2027-04-06","type":"rodatge","sport":"trail","zone":"Z2","km":3.7,"dplus":0,"desc":"Rodatge lleuger Z2. 3.7km. Ha de semblar fàcil."},"fri":{"date":"2027-04-09","type":"bici_z2","sport":"bici","zone":"Z2","km":12.5,"dplus":0,"desc":"Rodet Z2 suau. 12.5km. Cames actives."},"sat":{"type":"sortida_suau","sport":"trail","zone":"Z2","km":6.4,"dplus":229,"desc":"Sortida suau trail. 6.4km / D+229m. Gaudir. Res de forçar.","date":"2027-04-10"}}},{"week":42,"phase":4,"phase_name":"Tapering","is_recovery":false,"start_date":"2027-04-12","sessions":{"tue":{"date":"2027-04-13","type":"rodatge","sport":"trail","zone":"Z2","km":3.6,"dplus":0,"desc":"Rodatge lleuger Z2. 3.6km. Ha de semblar fàcil."},"fri":{"date":"2027-04-16","type":"bici_z2","sport":"bici","zone":"Z2","km":12.5,"dplus":0,"desc":"Rodet Z2 suau. 12.5km. Cames actives."},"sat":{"type":"sortida_suau","sport":"trail","zone":"Z2","km":6.3,"dplus":225,"desc":"Sortida suau trail. 6.3km / D+225m. Gaudir. Res de forçar.","date":"2027-04-17"}}},{"week":43,"phase":4,"phase_name":"Tapering","is_recovery":false,"start_date":"2027-04-19","sessions":{"tue":{"date":"2027-04-20","type":"activació","sport":"trail","zone":"Z2","km":5,"dplus":0,"desc":"Trote suau 30 min. 4x30 s acceleracions. Cames vives."},"prep":{"date":"2027-04-25","type":"descans_actiu","sport":"bici","zone":"—","km":0,"dplus":0,"desc":"Rodet molt suau 20 min o descans. Preparar material de cursa. Sopar lleuger."},"race":{"date":"2027-04-20","type":"CURSA","sport":"trail","zone":"Z2-Z4","km":21,"dplus":1100,"desc":"CURSA — Mitja Marató de Muntanya. 21km / D+1.100m. 43 setmanes de feina. Gaudeix-ho."}}}];
@@ -829,7 +850,16 @@ function renderAvui(){
 
   const hasSessions = cardioSessions.length > 0 || forcaSessions.length > 0;
 
+  // Mostrar propostes d'adaptació si n'hi ha
+  const adaptProposals = renderAdaptacioProposals();
+
   let html = `<div style="padding:20px;">`;
+  if(adaptProposals){
+    html += `<div style="margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:500;color:#78716C;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Adaptació del pla</div>
+      ${adaptProposals}
+    </div>`;
+  }
 
   // Data i títol
   html += `<div style="margin-bottom:20px;">
@@ -1052,10 +1082,375 @@ Sigues directe, específic i pràctic. Usa els números reals. No siguis excessi
   renderCardio();
 }
 
+
+
+// ── SISTEMA D'ADAPTACIÓ DEL PLA ─────────────────────────────────────────────
+const SK_ADAPTACIO = 'ca_adaptacio_v1';
+let adaptacioData = {}; // {offset: N, weekOverrides: {wn: {skip, repeat}}, proposals: [...], dismissed: [...]}
+
+async function loadAdaptacio(){
+  try{
+    const r = await window.storage.get(SK_ADAPTACIO);
+    if(r&&r.value) adaptacioData = JSON.parse(r.value);
+    else adaptacioData = {offset:0, weekOverrides:{}, proposals:[], dismissed:[]};
+  } catch(e){ adaptacioData = {offset:0, weekOverrides:{}, proposals:[], dismissed:[]}; }
+}
+
+async function saveAdaptacio(){
+  await window.storage.set(SK_ADAPTACIO, JSON.stringify(adaptacioData));
+}
+
+// Calcula la setmana efectiva tenint en compte l'offset d'adaptació
+function getEffectiveWeekIdx(nominalIdx){
+  return Math.min(PLA_CARDIO.length-1, nominalIdx + (adaptacioData.offset||0));
+}
+
+// Analitza la setmana acabada i genera propostes d'adaptació
+function analyzeWeekAdaptation(weekIdx){
+  const w = PLA_CARDIO[weekIdx];
+  if(!w) return null;
+
+  const ss = Object.entries(w.sessions);
+  const today = todayISO();
+
+  // Calcular volum planificat vs real
+  let plannedKm = 0, realKm = 0, sessionsPlanned = 0, sessionsDone = 0;
+  let avgRpe = 0, rpeCount = 0;
+  let missedSessions = [];
+
+  ss.forEach(([slot, s]) => {
+    if(s.date >= today) return; // Només sessions passades
+    const key = sKeyC(w.week, slot);
+    const log = cLogs[key]||{};
+    const done = cDone[key];
+    if(s.type === 'descans_actiu') return;
+
+    sessionsPlanned++;
+    plannedKm += s.km || 0;
+
+    if(done){
+      sessionsDone++;
+      if(log.km) realKm += parseFloat(log.km);
+      else realKm += s.km; // Si no té dades, assumim planificat
+    } else {
+      missedSessions.push(TYPE_LABEL[s.type]||s.type);
+    }
+
+    if(log.rpe){ avgRpe += log.rpe; rpeCount++; }
+  });
+
+  if(sessionsPlanned === 0) return null;
+
+  const completionPct = Math.round(sessionsDone/sessionsPlanned*100);
+  const volumePct = plannedKm > 0 ? Math.round(realKm/plannedKm*100) : 100;
+  avgRpe = rpeCount > 0 ? Math.round(avgRpe/rpeCount*10)/10 : null;
+
+  const proposals = [];
+
+  // Regla 1: menys del 70% del volum → repetir setmana
+  if(volumePct < 70 && sessionsPlanned >= 2){
+    proposals.push({
+      type: 'repeat_week',
+      severity: 'warning',
+      title: 'Repetir la setmana ' + w.week,
+      reason: `Has completat el ${volumePct}% del volum planificat (${realKm.toFixed(1)}km de ${plannedKm.toFixed(1)}km). El cos no ha rebut l'estímul suficient per progressar.`,
+      action: `Repetir la setmana ${w.week} abans de passar a la ${w.week+1}. El pla s'endarrerirà 1 setmana.`,
+      weekIdx: weekIdx,
+    });
+  }
+
+  // Regla 2: menys del 50% sessions fetes → alerta forta
+  if(completionPct < 50 && sessionsPlanned >= 2){
+    proposals.push({
+      type: 'low_completion',
+      severity: 'danger',
+      title: 'Baixa adherència a la setmana ' + w.week,
+      reason: `Només has fet ${sessionsDone} de ${sessionsPlanned} sessions (${completionPct}%). Sessions saltades: ${missedSessions.join(', ')}.`,
+      action: 'Considera recuperar alguna sessió aquesta setmana o parlar amb el teu entrenador si hi ha causa física.',
+      weekIdx: weekIdx,
+    });
+  }
+
+  // Regla 3: RPE sistemàticament alt → recuperació extra
+  if(avgRpe !== null && avgRpe >= 8.5){
+    proposals.push({
+      type: 'high_rpe',
+      severity: 'warning',
+      title: 'Fatiga elevada detectada',
+      reason: `L'RPE mig de la setmana ${w.week} ha estat ${avgRpe}/10. Això indica fatiga acumulada important.`,
+      action: 'Reduir el volum de la propera setmana un 20% i prioritzar el son i la recuperació.',
+      weekIdx: weekIdx,
+    });
+  }
+
+  // Regla 4: tot perfecte → reforç positiu
+  if(completionPct >= 95 && volumePct >= 90 && (avgRpe === null || avgRpe <= 7)){
+    proposals.push({
+      type: 'on_track',
+      severity: 'success',
+      title: 'Setmana ' + w.week + ' completada perfectament',
+      reason: `Has fet el ${completionPct}% de les sessions i el ${volumePct}% del volum planificat${avgRpe?` amb RPE mig de ${avgRpe}`:''}. El pla progressa segons el previst.`,
+      action: null,
+      weekIdx: weekIdx,
+    });
+  }
+
+  return {weekIdx, completionPct, volumePct, avgRpe, proposals};
+}
+
+// Genera propostes per totes les setmanes passades no analitzades
+function checkAllWeeksForAdaptation(){
+  const today = todayISO();
+  const curIdx = findCurWeek(PLA_CARDIO);
+  const newProposals = [];
+
+  // Analitzar les últimes 3 setmanes passades
+  for(let i = Math.max(0, curIdx-3); i < curIdx; i++){
+    const w = PLA_CARDIO[i];
+    if(!w) continue;
+    // Verificar si ja hem analitzat aquesta setmana
+    const alreadyAnalyzed = (adaptacioData.proposals||[]).some(p=>p.weekIdx===i) ||
+                            (adaptacioData.dismissed||[]).includes(i);
+    if(alreadyAnalyzed) continue;
+
+    const result = analyzeWeekAdaptation(i);
+    if(result && result.proposals.length > 0){
+      result.proposals.forEach(p => newProposals.push(p));
+    }
+  }
+
+  if(newProposals.length > 0){
+    adaptacioData.proposals = [...(adaptacioData.proposals||[]), ...newProposals];
+    saveAdaptacio();
+  }
+
+  return newProposals;
+}
+
+function applyAdaptation(proposal){
+  if(proposal.type === 'repeat_week'){
+    adaptacioData.offset = (adaptacioData.offset||0) + 1;
+  }
+  // Eliminar la proposta de la llista
+  adaptacioData.proposals = (adaptacioData.proposals||[]).filter(p=>
+    !(p.type===proposal.type && p.weekIdx===proposal.weekIdx)
+  );
+  saveAdaptacio();
+  renderAll();
+}
+
+function dismissAdaptation(proposal){
+  adaptacioData.proposals = (adaptacioData.proposals||[]).filter(p=>
+    !(p.type===proposal.type && p.weekIdx===proposal.weekIdx)
+  );
+  if(!adaptacioData.dismissed) adaptacioData.dismissed = [];
+  adaptacioData.dismissed.push(proposal.weekIdx);
+  saveAdaptacio();
+  renderAll();
+}
+
+function getActiveProposals(){
+  checkAllWeeksForAdaptation();
+  return (adaptacioData.proposals||[]).filter(p => p.type !== 'on_track');
+}
+
+function getPositiveProposals(){
+  return (adaptacioData.proposals||[]).filter(p => p.type === 'on_track');
+}
+
+function renderAdaptacioProposals(){
+  const active = getActiveProposals();
+  const positive = getPositiveProposals();
+  if(active.length === 0 && positive.length === 0) return '';
+
+  const SEVERITY_STYLE = {
+    danger:  {bg:'#FEF2F2', border:'rgba(185,28,28,0.3)', col:'#B91C1C', icon:'🚨'},
+    warning: {bg:'#FFFBEB', border:'rgba(146,64,14,0.3)', col:'#92400E', icon:'⚠️'},
+    success: {bg:'#EEF3E8', border:'rgba(45,80,22,0.3)',  col:'#2D5016', icon:'✅'},
+  };
+
+  let html = '';
+
+  [...active, ...positive].forEach(p => {
+    const st = SEVERITY_STYLE[p.severity]||SEVERITY_STYLE.warning;
+    html += `<div style="background:${st.bg};border:1px solid ${st.border};border-radius:10px;padding:14px;margin-bottom:10px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;">
+        <span style="font-size:16px;flex-shrink:0">${st.icon}</span>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:500;color:${st.col};margin-bottom:3px">${p.title}</div>
+          <div style="font-size:11px;font-weight:300;color:#78716C;line-height:1.6">${p.reason}</div>
+          ${p.action?`<div style="font-size:11px;font-weight:400;color:${st.col};margin-top:4px;line-height:1.6">→ ${p.action}</div>`:''}
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:8px;">
+        <button onclick="dismissAdaptation(${JSON.stringify(p).replace(/"/g,'&quot;')})"
+          style="font-family:'Fira Sans',system-ui;font-size:11px;padding:4px 12px;border-radius:6px;border:1px solid #C8C2BB;background:transparent;color:#78716C;cursor:pointer;">
+          Ignorar
+        </button>
+        ${p.type==='repeat_week'?`<button onclick="applyAdaptation(${JSON.stringify(p).replace(/"/g,'&quot;')})"
+          style="font-family:'Fira Sans',system-ui;font-size:11px;font-weight:500;padding:4px 12px;border-radius:6px;border:1px solid ${st.col};background:${st.col};color:#fff;cursor:pointer;">
+          Aplicar canvi
+        </button>`:''}
+        ${p.type==='on_track'?`<button onclick="dismissAdaptation(${JSON.stringify(p).replace(/"/g,'&quot;')})"
+          style="font-family:'Fira Sans',system-ui;font-size:11px;font-weight:500;padding:4px 12px;border-radius:6px;border:1px solid ${st.col};background:${st.col};color:#fff;cursor:pointer;">
+          ✓ Entès
+        </button>`:''}
+      </div>
+    </div>`;
+  });
+
+  return html;
+}
+
+// ── ALIMENTACIÓ ─────────────────────────────────────────────────────────────
+const MENUS_DATA = {"trail":{"label":"Dia de Trail 🏔","kcal":2500,"p":175,"c":285,"g":65,"color":"#2D5016","avis":"Dia de més volum — augmenta els carbohidrats al dinar. Hidrata't bé abans i després.","aparts":{"esmorzar":{"nom":"Porridge amb fruits vermells i proteïna","tupper":false,"ingredients":["80g civada","250ml llet semidesnatada","1 scoop proteïna vainilla (25g)","80g fruits vermells (maduixes o nabius)","1/2 culleradeta cúrcuma + pessic de gingebre","10g nous"],"prep":["Cou la civada amb la llet 3-4 min al microones.","Barreja la proteïna quan estigui tèbia.","Afegeix els fruits vermells, nous i les espècies per sobre."],"kcal":540,"p":40,"c":60,"g":14},"mig_mati":{"nom":"Kefir amb fruita de temporada i nous","tupper":true,"ingredients":["200ml kefir","1 poma o pera","10g nous"],"prep":["Porta el kefir en un got amb tapa. Fruita i nous a part."],"kcal":210,"p":8,"c":26,"g":8},"dinar":{"nom":"Arròs integral amb pollastre i espinacs","tupper":true,"ingredients":["150g arròs integral (cru)","180g pit de pollastre","100g espinacs frescos","1/2 alvocat","1 cda oli d'oliva","All, cúrcuma, gingebre, sal"],"prep":["Cou l'arròs (es pot fer el diumenge per tota la setmana).","Cuina el pollastre a la planxa amb all, cúrcuma i gingebre.","Salteja els espinacs 1 min amb oli.","Munta el tupper: arròs + pollastre + espinacs + alvocat a talls."],"kcal":680,"p":52,"c":82,"g":16},"berenar":{"nom":"Iogurt grec amb fruits vermells i civada","tupper":true,"ingredients":["200g iogurt grec 0%","80g fruits vermells","30g civada crua","1 culleradeta mel"],"prep":["Posa-ho tot en un pot amb tapa. Porta al tupper."],"kcal":300,"p":22,"c":40,"g":4},"sopar":{"nom":"Salmó al forn amb patata i espinacs","tupper":false,"ingredients":["200g salmó","200g patata","100g espinacs frescos","1/2 alvocat","1 cda oli d'oliva, llimona, all"],"prep":["Preescalfa el forn a 200°C.","Talla la patata a daus, condimenta amb oli i sal, cou 20 min.","Afegeix el salmó els últims 12-15 min.","Salteja els espinacs amb all 2 min. Serveix amb alvocat."],"kcal":580,"p":46,"c":42,"g":22}}},"forca":{"label":"Dia de Força 💪","kcal":2400,"p":180,"c":245,"g":65,"color":"#7C3AED","avis":"Pren la creatina + proteïna dins dels 60 min post-entrenament per maximitzar la recuperació.","aparts":{"esmorzar":{"nom":"Civada amb ous remenats i fruita","tupper":false,"ingredients":["80g civada","200ml llet semidesnatada","2 ous","80g fruits vermells","1/2 culleradeta cúrcuma"],"prep":["Cou la civada amb la llet 3-4 min.","Cuina els ous remenats a part a la paella amb oli.","Afegeix cúrcuma a la civada i els fruits vermells per sobre."],"kcal":510,"p":30,"c":60,"g":14},"mig_mati":{"nom":"Iogurt grec amb nous i poma","tupper":true,"ingredients":["200g iogurt grec 0%","15g nous","1 poma"],"prep":["Porta en un pot. La poma a part per evitar que s'oxidi."],"kcal":270,"p":20,"c":24,"g":10},"dinar":{"nom":"Pasta integral amb llenties i tomàquet","tupper":true,"ingredients":["120g pasta integral (cru)","150g llenties cuites","200g tomàquet triturat","100g espinacs","1 cda oli d'oliva","All, cúrcuma, gingebre, orenga"],"prep":["Cou la pasta al dente.","Salteja all amb oli, afegeix tomàquet i espècies, cou 8 min.","Incorpora les llenties i els espinacs, cou 3 min més.","Barreja amb la pasta. Viatja bé fred al tupper."],"kcal":610,"p":30,"c":96,"g":10},"berenar":{"nom":"Batut proteic post-entrenament amb creatina","tupper":false,"ingredients":["1 scoop proteïna xocolata (25g)","250ml llet semidesnatada","80g fruits vermells","5g creatina monohidrat","Pessic de gingebre en pols"],"prep":["Bat-ho tot en una coctelera o batedora.","Pren-lo immediatament després de l'entrenament."],"kcal":300,"p":36,"c":26,"g":4},"sopar":{"nom":"Vedella a la planxa amb patata i ruca","tupper":false,"ingredients":["180g filet de vedella","200g patata","80g ruca o espinacs","1/2 alvocat","1 cda oli d'oliva, all, romaní"],"prep":["Cou la patata bullida o al vapor 15 min.","Cuina la vedella a la planxa 3 min per banda.","Munta el plat: patata + vedella + ruca + alvocat.","Alinya amb oli, all i romaní."],"kcal":570,"p":50,"c":38,"g":22}}},"bici":{"label":"Dia de Bici 🚴","kcal":2450,"p":170,"c":272,"g":65,"color":"#0369A1","avis":"Si la sortida supera 1h, porta un plàtan o dàtils. Hidrata't amb electròlits si fa calor.","aparts":{"esmorzar":{"nom":"Porridge amb plàtan i alvocat","tupper":false,"ingredients":["80g civada","250ml llet semidesnatada","1 plàtan","1/4 alvocat","1/2 culleradeta cúrcuma + gingebre"],"prep":["Cou la civada amb la llet 3-4 min.","Afegeix el plàtan aixafat i l'alvocat a daus.","Condimenta amb les espècies."],"kcal":510,"p":18,"c":72,"g":16},"mig_mati":{"nom":"Kefir amb nabius i nous","tupper":true,"ingredients":["200ml kefir","80g nabius o gerds","15g nous"],"prep":["Barreja-ho en un pot amb tapa."],"kcal":200,"p":8,"c":22,"g":8},"dinar":{"nom":"Arròs integral amb cigrons i verdures rostides","tupper":true,"ingredients":["150g arròs integral (cru)","150g cigrons cuits","150g carbassó","100g pebrot vermell","1 cda oli d'oliva","All, cúrcuma, comí, sal"],"prep":["Cou l'arròs (es pot preparar per endavant).","Salteja el carbassó i el pebrot amb oli i espècies 6 min.","Incorpora els cigrons i cou 2 min més.","Barreja amb l'arròs. Perfecte fred al tupper."],"kcal":640,"p":24,"c":106,"g":10},"berenar":{"nom":"Iogurt grec amb fruits vermells","tupper":true,"ingredients":["200g iogurt grec 0%","80g fruits vermells","10g nous","1 culleradeta mel"],"prep":["Posa-ho en un pot. El iogurt aguanta bé fins al berenar."],"kcal":250,"p":20,"c":22,"g":8},"sopar":{"nom":"Peix blanc al forn amb patata i tomàquet","tupper":false,"ingredients":["200g lluç, bacallà o dorada","200g patata","150g tomàquet","80g espinacs","1 cda oli d'oliva, all, julivert, llimona"],"prep":["Preescalfa el forn a 190°C.","Disposa la patata tallada a rodanxes, el tomàquet i el peix en una safata.","Rega amb oli, all i julivert. Cou 25-30 min.","Serveix amb els espinacs crus o saltejats."],"kcal":560,"p":46,"c":46,"g":14}}},"descans":{"label":"Dia de Descans 🌿","kcal":2050,"p":165,"c":195,"g":60,"color":"#78716C","avis":"Menys carbohidrats avui. Aprofita per preparar l'arròs i el pollastre del tupper de la setmana.","aparts":{"esmorzar":{"nom":"Civada amb kefir i fruits vermells","tupper":false,"ingredients":["60g civada","150ml kefir","80g fruits vermells","1/2 culleradeta cúrcuma + gingebre","5g creatina monohidrat","10g nous"],"prep":["Barreja la civada amb el kefir (overnight oats — prepara la nit anterior).","Afegeix la creatina, fruits vermells, nous i espècies al moment de menjar."],"kcal":390,"p":18,"c":48,"g":12},"mig_mati":{"nom":"Fruita de temporada i nous","tupper":false,"ingredients":["1 poma o pera o taronja","15g nous"],"prep":["Pica directament. Res a preparar."],"kcal":170,"p":3,"c":24,"g":8},"dinar":{"nom":"Llenties amb verdures i ou dur","tupper":false,"ingredients":["200g llenties cuites","2 ous durs","100g espinacs o ruca","100g tomàquet cherry","1/2 alvocat","1 cda oli d'oliva, vinagre, sal"],"prep":["Escalfa les llenties 2 min al microones.","Cou els ous durs 10 min.","Munta el plat: fulles verdes + llenties tèbies + ou + tomàquet + alvocat.","Alinya amb oli i vinagre."],"kcal":510,"p":30,"c":44,"g":20},"berenar":{"nom":"Iogurt grec amb fruita","tupper":false,"ingredients":["200g iogurt grec 0%","80g fruits vermells"],"prep":["Barreja-ho directament al pot."],"kcal":190,"p":18,"c":18,"g":2},"sopar":{"nom":"Crema de verdures amb pollastre a la planxa","tupper":false,"ingredients":["200g carbassó","100g pastanaga","100g porro","150g pit de pollastre","1 llesca pa integral","1 cda oli d'oliva, gingebre, cúrcuma, sal"],"prep":["Salteja el porro amb oli 3 min, afegeix carbassó i pastanaga.","Cobreix d'aigua i cou 20 min. Tritura amb les espècies.","Cuina el pollastre a la planxa 4 min per banda.","Serveix la crema amb el pollastre a talls i la torrada."],"kcal":430,"p":40,"c":36,"g":10}}}};
+const APART_LABEL = {esmorzar:'Esmorzar',mig_mati:'Mig matí',dinar:'Dinar',berenar:'Berenar',sopar:'Sopar'};
+const APART_HORA  = {esmorzar:'7:30',mig_mati:'10:30',dinar:'13:30',berenar:'17:00',sopar:'20:30'};
+
+let alimentDayType = 'trail';
+let openMeal = null;
+
+function getDayTypeFromToday(){
+  const today = todayISO();
+  // Mirar si avui hi ha sessió planificada per determinar el tipus de dia
+  let hasTrail=false, hasBici=false, hasForca=false;
+  PLA_CARDIO.forEach(w=>{
+    Object.entries(w.sessions).forEach(([slot,s])=>{
+      if(s.date===today){
+        if(s.sport==='trail') hasTrail=true;
+        if(s.sport==='bici') hasBici=true;
+      }
+    });
+  });
+  PLA_FORCA.forEach(w=>{
+    Object.entries(w.sessions).forEach(([day,sess])=>{
+      if(sess.date===today) hasForca=true;
+    });
+  });
+  if(hasTrail) return 'trail';
+  if(hasBici) return 'bici';
+  if(hasForca) return 'forca';
+  return 'descans';
+}
+
+function renderAliment(){
+  const el = document.getElementById('tab-aliment');
+  if(!el) return;
+
+  // Auto-detectar tipus de dia si és la primera vegada
+  if(!window._alimentInit){
+    alimentDayType = getDayTypeFromToday();
+    window._alimentInit = true;
+  }
+
+  const menu = MENUS_DATA[alimentDayType];
+  const aparts = Object.entries(menu.aparts);
+  const totalKcal = aparts.reduce((a,[,v])=>a+v.kcal,0);
+  const totalP = aparts.reduce((a,[,v])=>a+v.p,0);
+  const totalC = aparts.reduce((a,[,v])=>a+v.c,0);
+  const totalG = aparts.reduce((a,[,v])=>a+v.g,0);
+
+  let html = '';
+
+  // Selector de tipus de dia
+  html += `<div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:500;color:#78716C;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Tipus de dia</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      ${Object.entries(MENUS_DATA).map(([k,v])=>`
+        <button class="day-type-btn ${alimentDayType===k?'active':''}"
+          style="${alimentDayType===k?`background:${v.color};border-color:${v.color};`:''}"
+          onclick="setAlimentDay('${k}')">${v.label}</button>
+      `).join('')}
+    </div>
+  </div>`;
+
+  // Avís del dia
+  html += `<div style="padding:8px 12px;border-radius:8px;background:${menu.color}12;border:1px solid ${menu.color}30;font-size:11px;font-weight:300;color:${menu.color};margin-bottom:16px;line-height:1.6;">
+    💡 ${menu.avis}
+  </div>`;
+
+  // Resum de macros del dia
+  html += `<div class="section-card" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;">
+      <div class="section-title" style="margin-bottom:0">Resum nutricional</div>
+      <span style="font-size:20px;font-weight:600;color:${menu.color};letter-spacing:-1px">${totalKcal} <span style="font-size:11px;font-weight:300;color:#78716C;">kcal</span></span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+      ${[
+        {l:'Proteïna',v:totalP,u:'g',col:'#2D5016',obj:175},
+        {l:'Carbohidrats',v:totalC,u:'g',col:'#1D4ED8',obj:260},
+        {l:'Greixos',v:totalG,u:'g',col:'#B45309',obj:70},
+      ].map(m=>`<div style="padding:8px 10px;border-radius:8px;background:#F7F5F2;border:1px solid #E5E1DC;text-align:center;">
+        <div style="font-size:16px;font-weight:600;color:#1C1917">${m.v}<span style="font-size:10px;font-weight:300;color:#78716C"> ${m.u}</span></div>
+        <div style="font-size:10px;font-weight:300;color:#78716C;margin:2px 0">${m.l}</div>
+        <div style="height:2px;background:#E5E1DC;border-radius:1px;"><div style="height:100%;background:${m.col};width:${Math.min(100,Math.round(m.v/m.obj*100))}%;border-radius:1px;"></div></div>
+      </div>`).join('')}
+    </div>
+    <div class="macro-bar-row">
+      <span class="macro-bar-label">Objectiu kcal</span>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:${Math.min(100,Math.round(totalKcal/menu.kcal*100))}%;background:${menu.color}"></div></div>
+      <span class="macro-bar-val">${menu.kcal}</span>
+    </div>
+    <div class="macro-bar-row">
+      <span class="macro-bar-label">Objectiu prot.</span>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:${Math.min(100,Math.round(totalP/menu.p*100))}%;background:#2D5016"></div></div>
+      <span class="macro-bar-val">${menu.p} g</span>
+    </div>
+  </div>`;
+
+  // Àpats
+  html += `<div style="font-size:11px;font-weight:500;color:#78716C;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Menú del dia</div>`;
+
+  aparts.forEach(([slot, apart]) => {
+    const isOpen = openMeal === slot+'_'+alimentDayType;
+    html += `<div class="meal-card">
+      <div class="meal-header" onclick="toggleMeal('${slot}_${alimentDayType}')">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <span class="meal-title">${APART_LABEL[slot]}</span>
+            <span style="font-size:10px;font-weight:300;color:#78716C">${APART_HORA[slot]}</span>
+            ${apart.tupper?'<span style="font-size:10px;font-weight:500;color:#0369A1;background:#F0F9FF;border:1px solid #BAE6FD;padding:1px 6px;border-radius:20px;">🥡 Tupper</span>':''}
+          </div>
+          <div style="font-size:12px;font-weight:300;color:#78716C">${apart.nom}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:12px;">
+          <div class="meal-macros">
+            <span class="macro-badge" style="color:#2D5016;background:#EEF3E8">${apart.p}g P</span>
+            <span class="macro-badge" style="color:#1D4ED8;background:#EFF6FF">${apart.c}g C</span>
+            <span style="font-size:11px;font-weight:500;color:#1C1917">${apart.kcal} kcal</span>
+          </div>
+          <span style="font-size:12px;color:#C8C2BB">${isOpen?'▲':'▼'}</span>
+        </div>
+      </div>
+      ${isOpen?`<div class="meal-body">
+        <div style="font-size:11px;font-weight:500;color:#78716C;margin-bottom:4px;letter-spacing:0.04em;">INGREDIENTS</div>
+        <ul class="ingredients-list">
+          ${apart.ingredients.map(i=>`<li>${i}</li>`).join('')}
+        </ul>
+        <div style="font-size:11px;font-weight:500;color:#78716C;margin-bottom:4px;letter-spacing:0.04em;">PREPARACIÓ</div>
+        <ol class="prep-list">
+          ${apart.prep.map(p=>`<li>${p}</li>`).join('')}
+        </ol>
+        <div style="display:flex;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid #E5E1DC;">
+          <span style="font-size:11px;font-weight:300;color:#78716C">Proteïna: <strong style="color:#2D5016">${apart.p}g</strong></span>
+          <span style="font-size:11px;font-weight:300;color:#78716C">Carbohidrats: <strong style="color:#1D4ED8">${apart.c}g</strong></span>
+          <span style="font-size:11px;font-weight:300;color:#78716C">Greixos: <strong style="color:#B45309">${apart.g}g</strong></span>
+        </div>
+      </div>`:''}
+    </div>`;
+  });
+
+  el.innerHTML = html;
+}
+
+function setAlimentDay(type){ alimentDayType=type; openMeal=null; renderAliment(); }
+function toggleMeal(key){ openMeal=(openMeal===key?null:key); renderAliment(); }
+
 function renderAll(){
   renderAvui();
   renderCardio();
   renderForca();
+  renderAliment();
   // Actualitzar indicador de preparació física
   const f=calcFitness();
   const bar=document.getElementById('fitness-bar');
@@ -1084,6 +1479,7 @@ function renderAll(){
   cLogs=await load(SK_CLOGS);
   fDone=await load(SK_FDONE);
   fLogs=await load(SK_FLOGS);
+  await loadAdaptacio();
   renderAll();
 })();
 </script>
