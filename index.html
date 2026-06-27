@@ -1079,21 +1079,11 @@ function renderAll(){
   }
 }
 
-// Dades de prova (s'apliquen si el storage és buit)
-const TEST_CDONE={"c1_tue":true,"c1_fri":true,"c1_sat":true,"c2_tue":true,"c2_fri":true,"c2_sat":true,"c3_tue":true,"c3_fri":true,"c3_sat":true,"c4_tue":true,"c4_fri":true,"c4_sat":true,"c5_tue":true,"c5_fri":true,"c5_sat":true,"c6_tue":true,"c6_fri":true,"c6_sat":true,"c7_tue":false,"c7_fri":true,"c7_sat":true,"c8_tue":true,"c8_fri":true,"c8_sat":true};
-const TEST_CLOGS={"c1_tue":{"km":3.0,"fcAvg":136,"fcMax":147,"pace":"6:18","mood":"🙂","rpe":6},"c1_fri":{"km":24.7,"fcAvg":146,"fcMax":160,"mood":"😞","rpe":4},"c1_sat":{"km":5.9,"dplus":120,"fcAvg":134,"fcMax":152,"pace":"8:44","mood":"😐","rpe":5},"c2_tue":{"km":4.2,"fcAvg":128,"fcMax":138,"pace":"8:37","mood":"😐","rpe":4},"c2_fri":{"km":26.0,"fcAvg":131,"fcMax":140,"mood":"😐","rpe":5},"c2_sat":{"km":7.0,"dplus":200,"fcAvg":142,"fcMax":158,"pace":"6:34","mood":"😞","rpe":5},"c3_tue":{"km":4.5,"fcAvg":139,"fcMax":156,"pace":"6:55","mood":"😐","rpe":6},"c3_fri":{"km":23.1,"fcAvg":130,"fcMax":141,"mood":"😄","rpe":5},"c3_sat":{"km":8.1,"dplus":222,"fcAvg":139,"fcMax":152,"pace":"6:52","mood":"🙂","rpe":6},"c4_tue":{"km":5.0,"fcAvg":133,"fcMax":149,"pace":"8:25","mood":"😐","rpe":5},"c4_fri":{"km":27.0,"fcAvg":145,"fcMax":156,"mood":"🙂","rpe":4},"c4_sat":{"km":7.7,"dplus":263,"fcAvg":136,"fcMax":145,"pace":"6:46","mood":"😄","rpe":5},"c5_tue":{"km":5.3,"dplus":49,"fcAvg":168,"fcMax":185,"pace":"6:26","mood":"😐","rpe":8},"c5_fri":{"km":29.3,"fcAvg":146,"fcMax":160,"mood":"😄","rpe":5},"c5_sat":{"km":9.6,"dplus":162,"fcAvg":143,"fcMax":152,"pace":"6:17","mood":"😐","rpe":4},"c6_tue":{"km":5.5,"dplus":48,"fcAvg":160,"fcMax":179,"pace":"7:43","mood":"🙂","rpe":8},"c6_fri":{"km":29.0,"fcAvg":131,"fcMax":149,"mood":"😄","rpe":5},"c6_sat":{"km":8.8,"dplus":209,"fcAvg":133,"fcMax":148,"pace":"6:56","mood":"😄","rpe":5},"c7_fri":{"km":35.2,"fcAvg":131,"fcMax":149,"mood":"🙂","rpe":6},"c7_sat":{"km":9.1,"dplus":254,"fcAvg":133,"fcMax":149,"pace":"8:10","mood":"😄","rpe":5},"c8_tue":{"km":5.0,"dplus":49,"fcAvg":157,"fcMax":170,"pace":"6:25","mood":"😄","rpe":6},"c8_fri":{"km":25.8,"fcAvg":130,"fcMax":146,"mood":"😄","rpe":4},"c8_sat":{"km":8.3,"dplus":166,"fcAvg":144,"fcMax":161,"pace":"7:23","mood":"😄","rpe":6}};
-
 (async function(){
   cDone=await load(SK_CDONE);
   cLogs=await load(SK_CLOGS);
   fDone=await load(SK_FDONE);
   fLogs=await load(SK_FLOGS);
-  // Si no hi ha cap dada real, carregar dades de prova
-  if(Object.keys(cDone).length===0 && Object.keys(cLogs).length===0){
-    cDone=Object.assign({},TEST_CDONE);
-    cLogs=JSON.parse(JSON.stringify(TEST_CLOGS));
-    console.log('Dades de prova carregades');
-  }
   renderAll();
 })();
 </script>
