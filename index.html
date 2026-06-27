@@ -362,7 +362,7 @@ function handleCSVImport(input){
   reader.onload=ev=>{
     try{
       const rows=parseCSV(ev.target.result);
-      const activities=rows.map(normalizeActivity).filter(a=>a.date&&(a.km||a.fcAvg||a.temps));
+      const activities=rows.map(normalizeActivity).filter(a=>a.date);
 
       // 1. Guardar TOTES les activitats al registre general
       const existing = new Set(acts.map(a=>a.date+'_'+a.sport+'_'+(a.km||0)));
